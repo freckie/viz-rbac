@@ -24,6 +24,7 @@ func main() {
 	// Setting http router
 	router := httprouter.New()
 	router.GET("/namespaces", ep.GetNamespaces)
+	router.GET("/namespaces/:namespace/service-accounts", ep.GetServiceAccounts)
 
 	// Serve
 	log.Println("Starting HTTP API Server on port", port)
