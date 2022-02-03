@@ -26,6 +26,8 @@ func main() {
 	router.GET("/namespaces", ep.GetNamespaces)
 	router.GET("/namespaces/:namespace/service-accounts", ep.GetServiceAccounts)
 	router.GET("/namespaces/:namespace/service-accounts/:sa/roles", ep.GetRolesByServiceAccount)
+	router.GET("/namespaces/:namespace/roles/:role", ep.GetRole)
+	router.GET("/namespaces/:namespace/cluster-roles/:crole", ep.GetClusterRole)
 
 	// Serve
 	log.Println("Starting HTTP API Server on port", port)

@@ -66,3 +66,43 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 
 	return result, nil
 }
+
+type RoleRules map[string][]string
+
+// GetRole returns result from describing a specific Role.
+func (c *K8SClient) GetRole(namespace, roleName string) (RoleRules, error) {
+	cs := c.clientset
+	result := make(map[string][]string)
+
+	role, err := cs.RbacV1().Roles(namespace).Get(c.ctx, roleName, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, rule := range role.Rules {
+		for _, res := range rule.Resources {
+			result[res] = rule.Verbs
+		}
+	}
+
+	return result, nil
+}
+
+// GetClusterRole returns result from describing a specific ClusterRole.
+func (c *K8SClient) GetClusterRole(croleName string) (RoleRules, error) {
+	cs := c.clientset
+	result := make(map[string][]string)
+
+	crole, err := cs.RbacV1().ClusterRoles().Get(c.ctx, croleName, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, rule := range crole.Rules {
+		for _, res := range rule.Resources {
+			result[res] = rule.Verbs
+		}
+	}
+
+	return result, nil
+}
