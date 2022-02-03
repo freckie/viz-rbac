@@ -38,20 +38,14 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	if err != nil {
 		return result, err
 	}
-	jpResults[0], err = jp.Execute(rbList)
-	if err != nil {
-		return result, err
-	}
+	jpResults[0], _ = jp.Execute(rbList)
 
 	// Querying ClusterRoleBindings
 	crbList, err := cs.RbacV1().ClusterRoleBindings().List(c.ctx, metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
-	jpResults[1], err = jp.Execute(crbList)
-	if err != nil {
-		return result, err
-	}
+	jpResults[1], _ = jp.Execute(crbList)
 
 	// Parsing the result of jsonpath execution
 	jpResult := strings.Join(jpResults, "")
