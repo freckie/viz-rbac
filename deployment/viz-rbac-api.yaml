@@ -36,7 +36,10 @@ metadata:
   namespace: viz-rbac
 rules:
 - apiGroups: [""]
-  resources: ["namespaces"]
+  resources: ["namespaces", "pods", "serviceaccounts"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: ["rbac.authorizatoin.k8s.io"]
+  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
   verbs: ["get", "watch", "list"]
 
 ---
@@ -94,7 +97,7 @@ spec:
       containers:
       - name: viz-rbac-api
         image: freckie/viz-rbac-api:0.0.1
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always # for development. use IfNotPresent for production
         ports:
         - name: http
           containerPort: 8000

@@ -29,7 +29,10 @@ func (e *Endpoints) GetRolesByServiceAccount(w http.ResponseWriter, r *http.Requ
 		ihttp.ResponseError(w, 500, err.Error())
 	}
 
-	resp := models.GetRolesByServiceAccountResp{Result: result}
+	resp := models.GetRolesByServiceAccountResp{
+		Roles: result,
+		Count: len(result),
+	}
 	ihttp.ResponseOK(w, "success", resp)
 	return
 }

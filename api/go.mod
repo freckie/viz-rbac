@@ -45,5 +45,6 @@ replace (
 	github.com/freckie/viz-rbac/endpoints => ./endpoints
 	github.com/freckie/viz-rbac/internal/http => ./internal/http
 	github.com/freckie/viz-rbac/internal/k8s => ./internal/k8s
+	github.com/freckie/viz-rbac/internal/jsonpath => ./internal/jsonpath
 	github.com/freckie/viz-rbac/models => ./models
 )

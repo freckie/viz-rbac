@@ -1,52 +1,68 @@
 package k8s
 
 import (
-	"bytes"
 	"fmt"
+	"regexp"
+	"strings"
+
+	ijp "github.com/freckie/viz-rbac/internal/jsonpath"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/util/jsonpath"
 )
 
 var (
 	jpfmtForRoleBindings string = "{range .items[?(@.subjects[0].name==\"%s\")]}[{.roleRef.kind},{.roleRef.name}]{end}"
+	rolePattern                 = regexp.MustCompile(`((Cluster)?Role),[0-9a-zA-Z-]+`)
 )
 
-// GetRolesByServiceAccount returns a list of Roles bound to a specific ServiceAccount.
-func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (string, error) {
+type RoleResult struct {
+	Kind string `json:"kind"`
+	Name string `json:"name"`
+}
+
+// GetRolesByServiceAccount returns a list of Roles|ClusterRoles bound to a specific ServiceAccount.
+func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) ([]RoleResult, error) {
 	cs := c.clientset
-	var result string
+	var result []RoleResult
 
 	// Using jsonpath
-	jp := jsonpath.New("jsonPathForFindingRoleBindings")
-	jp.EnableJSONOutput(true)
 	_jpStr := fmt.Sprintf(jpfmtForRoleBindings, serviceAccount)
-	err := jp.Parse(_jpStr)
+	jp, err := ijp.NewJsonpathHandler("jsonPathForFindingRoleBindings", _jpStr)
 	if err != nil {
 		return result, err
 	}
+	jpResults := make([]string, 2)
 
-	// 추후 다음 커맨드처럼 수정
-	// kubectl get rolebinding,clusterrolebinding --all-namespaces -o jsonpath='{range .items[?(@.subjects[0].name=="SERVICE_ACCOUNT_NAME")]}[{.roleRef.kind},{.roleRef.name}]{end}'
+	// Querying RoleBindings
 	rbList, err := cs.RbacV1().RoleBindings(namespace).List(c.ctx, metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
+	jpResults[0], err = jp.Execute(rbList)
+	if err != nil {
+		return result, err
+	}
 
-	// Jsonpath execution
-	var buf bytes.Buffer
-	jp.Execute(&buf, rbList)
-	return buf.String(), nil
+	// Querying ClusterRoleBindings
+	crbList, err := cs.RbacV1().ClusterRoleBindings().List(c.ctx, metav1.ListOptions{})
+	if err != nil {
+		return result, err
+	}
+	jpResults[1], err = jp.Execute(crbList)
+	if err != nil {
+		return result, err
+	}
 
-	// List up names of Roles that are referenced by RoleBindings
-	// for _, rb := range rbList.Items {
-	// 	for _, sbj := range rb.Subjects {
-	// 		if sbj.Name == serviceAccount {
-	// 			result = append(result, rb.RoleRef.Name)
-	// 			break
-	// 		}
-	// 	}
-	// }
+	// Parsing the result of jsonpath execution
+	jpResult := strings.Join(jpResults, "")
+	result = make([]RoleResult, 0)
+	for _, role := range rolePattern.FindAllString(jpResult, -1) {
+		_tokens := strings.Split(role, ",")
+		result = append(result, RoleResult{
+			Kind: _tokens[0],
+			Name: _tokens[1],
+		})
+	}
 
-	// return result, nil
+	return result, nil
 }
