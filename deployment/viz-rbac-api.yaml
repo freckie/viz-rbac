@@ -38,7 +38,7 @@ rules:
 - apiGroups: [""]
   resources: ["namespaces", "pods", "serviceaccounts"]
   verbs: ["get", "watch", "list"]
-- apiGroups: ["rbac.authorizatoin.k8s.io"]
+- apiGroups: ["rbac.authorization.k8s.io"]
   resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
   verbs: ["get", "watch", "list"]
 
