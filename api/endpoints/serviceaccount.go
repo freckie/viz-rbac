@@ -18,6 +18,7 @@ func (e *Endpoints) GetServiceAccounts(w http.ResponseWriter, r *http.Request, p
 	namespace := ps.ByName("namespace")
 	if namespace == "" {
 		ihttp.ResponseError(w, 404, "Namespace not found.")
+		return
 	}
 
 	var _namespace string
@@ -30,6 +31,7 @@ func (e *Endpoints) GetServiceAccounts(w http.ResponseWriter, r *http.Request, p
 	saList, err := c.GetServiceAccounts(_namespace)
 	if err != nil {
 		ihttp.ResponseError(w, 500, err.Error())
+		return
 	}
 
 	resp := models.GetServiceAccountsResp{ServiceAccounts: saList}

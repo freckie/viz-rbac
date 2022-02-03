@@ -18,15 +18,18 @@ func (e *Endpoints) GetRolesByServiceAccount(w http.ResponseWriter, r *http.Requ
 	namespace := ps.ByName("namespace")
 	if namespace == "" {
 		ihttp.ResponseError(w, 404, "Namespace not found.")
+		return
 	}
 	sa := ps.ByName("sa")
 	if sa == "" {
 		ihttp.ResponseError(w, 404, "ServiceAccount not found.")
+		return
 	}
 
 	result, err := c.GetRolesByServiceAccount(namespace, sa)
 	if err != nil {
 		ihttp.ResponseError(w, 500, err.Error())
+		return
 	}
 
 	resp := models.GetRolesByServiceAccountResp{
@@ -46,15 +49,18 @@ func (e *Endpoints) GetRole(w http.ResponseWriter, r *http.Request, ps httproute
 	namespace := ps.ByName("namespace")
 	if namespace == "" {
 		ihttp.ResponseError(w, 404, "Namespace not found.")
+		return
 	}
 	role := ps.ByName("role")
 	if role == "" {
 		ihttp.ResponseError(w, 404, "Role not found.")
+		return
 	}
 
 	result, err := c.GetRole(namespace, role)
 	if err != nil {
 		ihttp.ResponseError(w, 500, err.Error())
+		return
 	}
 
 	resp := models.GetRoleResp{
@@ -73,15 +79,18 @@ func (e *Endpoints) GetClusterRole(w http.ResponseWriter, r *http.Request, ps ht
 	namespace := ps.ByName("namespace")
 	if namespace == "" {
 		ihttp.ResponseError(w, 404, "Namespace not found.")
+		return
 	}
 	crole := ps.ByName("crole")
 	if crole == "" {
 		ihttp.ResponseError(w, 404, "ClusterRole not found.")
+		return
 	}
 
 	result, err := c.GetClusterRole(crole)
 	if err != nil {
 		ihttp.ResponseError(w, 500, err.Error())
+		return
 	}
 
 	resp := models.GetClusterRoleResp{
