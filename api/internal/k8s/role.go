@@ -25,12 +25,7 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	cs := c.clientset
 	var result []RoleResult
 
-	// Using jsonpath
 	_jpStr := fmt.Sprintf(jpfmtForRoleBindings, serviceAccount)
-	jp, err := ijp.NewJsonpathHandler("jsonPathForFindingRoleBindings", _jpStr)
-	if err != nil {
-		return result, err
-	}
 	jpResults := make([]string, 2)
 
 	// Querying RoleBindings
@@ -38,14 +33,14 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	if err != nil {
 		return result, err
 	}
-	jpResults[0], _ = jp.Execute(rbList)
+	jpResults[0], _ = ijp.Execute("jpForRBs", _jpStr, rbList)
 
 	// Querying ClusterRoleBindings
 	crbList, err := cs.RbacV1().ClusterRoleBindings().List(c.ctx, metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
-	jpResults[1], _ = jp.Execute(crbList)
+	jpResults[1], _ = ijp.Execute("jpForCRBs", _jpStr, crbList)
 
 	// Parsing the result of jsonpath execution
 	jpResult := strings.Join(jpResults, "")

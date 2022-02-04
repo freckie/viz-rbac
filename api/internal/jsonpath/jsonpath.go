@@ -6,28 +6,15 @@ import (
 	jp "k8s.io/client-go/util/jsonpath"
 )
 
-type JsonpathHandler struct {
-	JSONPath *jp.JSONPath
-	JPFormat string
-}
-
-func NewJsonpathHandler(name, format string) (*JsonpathHandler, error) {
-	handler := &JsonpathHandler{
-		JPFormat: format,
-	}
-
-	handler.JSONPath = jp.New(name)
-	err := handler.JSONPath.Parse(format)
+func Execute(name, format string, data interface{}) (string, error) {
+	handler := jp.New(name)
+	err := handler.Parse(format)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return handler, nil
-}
-
-func (h *JsonpathHandler) Execute(data interface{}) (string, error) {
 	var buf bytes.Buffer
-	err := h.JSONPath.Execute(&buf, data)
+	err = handler.Execute(&buf, data)
 	if err != nil {
 		return "", err
 	}
