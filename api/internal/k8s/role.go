@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	ijp "github.com/freckie/viz-rbac/internal/jsonpath"
+	iutils "github.com/freckie/viz-rbac/internal/utils"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -13,6 +14,7 @@ import (
 var (
 	jpfmtForRoleBindings string = "{range .items[?(@.subjects[0].name==\"%s\")]}[{.roleRef.kind},{.roleRef.name}]{end}"
 	rolePattern                 = regexp.MustCompile(`((Cluster)?Role),[0-9a-zA-Z-]+`)
+	wildcardVerbs               = []string{"get", "list", "watch", "update", "patch", "create", "delete", "deletecollection"}
 )
 
 type RoleResult struct {
@@ -70,7 +72,11 @@ func (c *K8SClient) GetRole(namespace, roleName string) (RoleRules, error) {
 
 	for _, rule := range role.Rules {
 		for _, res := range rule.Resources {
-			result[res] = rule.Verbs
+			if iutils.ContainsString(rule.Verbs, "*") {
+				result[res] = wildcardVerbs
+			} else {
+				result[res] = rule.Verbs
+			}
 		}
 	}
 
@@ -89,7 +95,11 @@ func (c *K8SClient) GetClusterRole(croleName string) (RoleRules, error) {
 
 	for _, rule := range crole.Rules {
 		for _, res := range rule.Resources {
-			result[res] = rule.Verbs
+			if iutils.ContainsString(rule.Verbs, "*") {
+				result[res] = wildcardVerbs
+			} else {
+				result[res] = rule.Verbs
+			}
 		}
 	}
 
