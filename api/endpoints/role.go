@@ -22,7 +22,8 @@ func (e *Endpoints) GetRolesByServiceAccount(w http.ResponseWriter, r *http.Requ
 		ihttp.ResponseError(w, 404, "Namespace not found.")
 		return
 	} else if namespace == "_all" {
-		namespace = ""
+		ihttp.ResponseError(w, 404, "\"_all\" is not supported for this endpoint.")
+		return
 	}
 	sa := ps.ByName("sa")
 	if sa == "" {
@@ -76,6 +77,9 @@ func (e *Endpoints) GetRole(w http.ResponseWriter, r *http.Request, ps httproute
 	if namespace == "" {
 		ihttp.ResponseError(w, 404, "Namespace not found.")
 		return
+	} else if namespace == "_all" {
+		ihttp.ResponseError(w, 404, "\"_all\" is not supported for this endpoint.")
+		return
 	}
 	role := ps.ByName("role")
 	if role == "" {
@@ -108,6 +112,9 @@ func (e *Endpoints) GetClusterRole(w http.ResponseWriter, r *http.Request, ps ht
 	namespace := ps.ByName("namespace")
 	if namespace == "" {
 		ihttp.ResponseError(w, 404, "Namespace not found.")
+		return
+	} else if namespace == "_all" {
+		ihttp.ResponseError(w, 404, "\"_all\" is not supported for this endpoint.")
 		return
 	}
 	crole := ps.ByName("crole")
