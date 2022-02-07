@@ -1,20 +1,13 @@
 package k8s
 
 import (
-	"fmt"
-	"regexp"
-	"strings"
-
-	ijp "github.com/freckie/viz-rbac/internal/jsonpath"
 	iutils "github.com/freckie/viz-rbac/internal/utils"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var (
-	jpfmtForRoleBindings string = "{range .items[?(@.subjects[0].name==\"%s\")]}[{.roleRef.kind},{.roleRef.name}]{end}"
-	rolePattern                 = regexp.MustCompile(`((Cluster)?Role),[0-9a-zA-Z-]+`)
-	wildcardVerbs               = []string{"get", "list", "watch", "update", "patch", "create", "delete", "deletecollection"}
+	wildcardVerbs = []string{"get", "list", "watch", "update", "patch", "create", "delete", "deletecollection"}
 )
 
 type RoleResult struct {
@@ -25,34 +18,36 @@ type RoleResult struct {
 // GetRolesByServiceAccount returns a list of Roles|ClusterRoles bound to a specific ServiceAccount.
 func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) ([]RoleResult, error) {
 	cs := c.clientset
-	var result []RoleResult
-
-	_jpStr := fmt.Sprintf(jpfmtForRoleBindings, serviceAccount)
-	jpResults := make([]string, 2)
+	result := make([]RoleResult, 0)
 
 	// Querying RoleBindings
 	rbList, err := cs.RbacV1().RoleBindings(namespace).List(c.ctx, metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
-	jpResults[0], _ = ijp.Execute("jpForRBs", _jpStr, rbList)
+
+	for _, rb := range rbList.Items {
+		if rb.Subjects[0].Name == serviceAccount {
+			result = append(result, RoleResult{
+				Kind: rb.RoleRef.Kind,
+				Name: rb.RoleRef.Name,
+			})
+		}
+	}
 
 	// Querying ClusterRoleBindings
 	crbList, err := cs.RbacV1().ClusterRoleBindings().List(c.ctx, metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
-	jpResults[1], _ = ijp.Execute("jpForCRBs", _jpStr, crbList)
 
-	// Parsing the result of jsonpath execution
-	jpResult := strings.Join(jpResults, "")
-	result = make([]RoleResult, 0)
-	for _, role := range rolePattern.FindAllString(jpResult, -1) {
-		_tokens := strings.Split(role, ",")
-		result = append(result, RoleResult{
-			Kind: _tokens[0],
-			Name: _tokens[1],
-		})
+	for _, crb := range crbList.Items {
+		if crb.Subjects[0].Name == serviceAccount {
+			result = append(result, RoleResult{
+				Kind: crb.RoleRef.Kind,
+				Name: crb.RoleRef.Name,
+			})
+		}
 	}
 
 	return result, nil
