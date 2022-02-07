@@ -34,7 +34,10 @@ func (e *Endpoints) GetServiceAccounts(w http.ResponseWriter, r *http.Request, p
 		return
 	}
 
-	resp := models.GetServiceAccountsResp{ServiceAccounts: saList}
+	resp := models.GetServiceAccountsResp{
+		ServiceAccounts:      saList,
+		ServiceAccountsCount: len(saList),
+	}
 	ihttp.ResponseOK(w, "success", resp)
 	return
 }

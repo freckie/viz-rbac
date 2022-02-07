@@ -17,7 +17,10 @@ func (e *Endpoints) GetNamespaces(w http.ResponseWriter, r *http.Request, ps htt
 		ihttp.ResponseError(w, 500, err.Error())
 	}
 
-	resp := models.GetNamespacesResp{Namespaces: nsList}
+	resp := models.GetNamespacesResp{
+		Namespaces:      nsList,
+		NamespacesCount: len(nsList),
+	}
 	ihttp.ResponseOK(w, "success", resp)
 	return
 }

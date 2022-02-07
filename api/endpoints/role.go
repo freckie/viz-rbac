@@ -33,8 +33,8 @@ func (e *Endpoints) GetRolesByServiceAccount(w http.ResponseWriter, r *http.Requ
 	}
 
 	resp := models.GetRolesByServiceAccountResp{
-		Roles: result,
-		Count: len(result),
+		Roles:      result,
+		RolesCount: len(result),
 	}
 	ihttp.ResponseOK(w, "success", resp)
 	return
@@ -64,7 +64,8 @@ func (e *Endpoints) GetRole(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	resp := models.GetRoleResp{
-		Resources: result,
+		Resources:      result,
+		ResourcesCount: len(result),
 	}
 	ihttp.ResponseOK(w, "success", resp)
 	return
@@ -94,7 +95,8 @@ func (e *Endpoints) GetClusterRole(w http.ResponseWriter, r *http.Request, ps ht
 	}
 
 	resp := models.GetClusterRoleResp{
-		Resources: result,
+		Resources:      result,
+		ResourcesCount: len(result),
 	}
 	ihttp.ResponseOK(w, "success", resp)
 	return

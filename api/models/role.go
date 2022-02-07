@@ -5,14 +5,16 @@ import (
 )
 
 type GetRolesByServiceAccountResp struct {
-	Roles []ik8s.RoleResult `json:"roles"`
-	Count int               `json:"count"`
+	Roles      []ik8s.RoleResult `json:"roles"`
+	RolesCount int               `json:"roles_count"`
 }
 
 type GetRoleResp struct {
-	Resources ik8s.RoleRules `json:"resources"`
+	Resources      ik8s.RoleRules `json:"resources"`
+	ResourcesCount int            `json:"resources_count"`
 }
 
 type GetClusterRoleResp struct {
-	Resources ik8s.RoleRules `json:"resources"`
+	Resources      ik8s.RoleRules `json:"resources"`
+	ResourcesCount int            `json:"resources_count"`
 }
