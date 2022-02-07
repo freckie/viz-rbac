@@ -4,20 +4,28 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type ServiceAccountResult struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+}
+
 // GetServiceAccounts returns a list of ServiceAccounts in a specific namespace.
 // If you want to list ServiceAccounts among all namespaces, just set namespace as an empty string.
-func (c *K8SClient) GetServiceAccounts(namespace string) ([]string, error) {
+func (c *K8SClient) GetServiceAccounts(namespace string) ([]ServiceAccountResult, error) {
 	cs := c.clientset
-	var result []string
+	var result []ServiceAccountResult
 
 	saList, err := cs.CoreV1().ServiceAccounts(namespace).List(c.ctx, metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
 
-	result = make([]string, len(saList.Items))
+	result = make([]ServiceAccountResult, len(saList.Items))
 	for idx, sa := range saList.Items {
-		result[idx] = sa.Name
+		result[idx] = ServiceAccountResult{
+			Name:      sa.Name,
+			Namespace: sa.Namespace,
+		}
 	}
 
 	return result, nil
