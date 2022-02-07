@@ -1,6 +1,8 @@
 package k8s
 
 import (
+	"context"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -15,7 +17,7 @@ func (c *K8SClient) GetServiceAccounts(namespace string) ([]ServiceAccountResult
 	cs := c.clientset
 	var result []ServiceAccountResult
 
-	saList, err := cs.CoreV1().ServiceAccounts(namespace).List(c.ctx, metav1.ListOptions{})
+	saList, err := cs.CoreV1().ServiceAccounts(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}

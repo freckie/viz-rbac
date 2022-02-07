@@ -1,6 +1,8 @@
 package k8s
 
 import (
+	"context"
+
 	iutils "github.com/freckie/viz-rbac/internal/utils"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,7 +23,7 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	result := make([]RoleResult, 0)
 
 	// Querying RoleBindings
-	rbList, err := cs.RbacV1().RoleBindings(namespace).List(c.ctx, metav1.ListOptions{})
+	rbList, err := cs.RbacV1().RoleBindings(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
@@ -36,7 +38,7 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	}
 
 	// Querying ClusterRoleBindings
-	crbList, err := cs.RbacV1().ClusterRoleBindings().List(c.ctx, metav1.ListOptions{})
+	crbList, err := cs.RbacV1().ClusterRoleBindings().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
@@ -60,7 +62,7 @@ func (c *K8SClient) GetRole(namespace, roleName string) (RoleRules, error) {
 	cs := c.clientset
 	result := make(map[string][]string)
 
-	role, err := cs.RbacV1().Roles(namespace).Get(c.ctx, roleName, metav1.GetOptions{})
+	role, err := cs.RbacV1().Roles(namespace).Get(context.TODO(), roleName, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +85,7 @@ func (c *K8SClient) GetClusterRole(croleName string) (RoleRules, error) {
 	cs := c.clientset
 	result := make(map[string][]string)
 
-	crole, err := cs.RbacV1().ClusterRoles().Get(c.ctx, croleName, metav1.GetOptions{})
+	crole, err := cs.RbacV1().ClusterRoles().Get(context.TODO(), croleName, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}

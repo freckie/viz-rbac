@@ -1,6 +1,8 @@
 package k8s
 
 import (
+	"context"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -9,7 +11,7 @@ func (c *K8SClient) GetNamespaces() ([]string, error) {
 	cs := c.clientset
 	var result []string
 
-	nsList, err := cs.CoreV1().Namespaces().List(c.ctx, metav1.ListOptions{})
+	nsList, err := cs.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
