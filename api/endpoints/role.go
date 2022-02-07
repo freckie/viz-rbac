@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	ihttp "github.com/freckie/viz-rbac/internal/http"
+	ik8s "github.com/freckie/viz-rbac/internal/k8s"
 	"github.com/freckie/viz-rbac/models"
 
 	"github.com/julienschmidt/httprouter"
@@ -13,12 +14,15 @@ import (
 // GET /namespaces/{namespace}/service-accounts/{sa}/roles
 func (e *Endpoints) GetRolesByServiceAccount(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	c := e.Client
+	var result []models.RoleItem
 
 	// Parse parameters
 	namespace := ps.ByName("namespace")
 	if namespace == "" {
 		ihttp.ResponseError(w, 404, "Namespace not found.")
 		return
+	} else if namespace == "_all" {
+		namespace = ""
 	}
 	sa := ps.ByName("sa")
 	if sa == "" {
@@ -26,12 +30,34 @@ func (e *Endpoints) GetRolesByServiceAccount(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	result, err := c.GetRolesByServiceAccount(namespace, sa)
+	// Get role names that are bound to the service account
+	roles, err := c.GetRolesByServiceAccount(namespace, sa)
 	if err != nil {
 		ihttp.ResponseError(w, 500, err.Error())
 		return
 	}
 
+	// Describe roles
+	result = make([]models.RoleItem, 0)
+	for _, role := range roles {
+		var rules ik8s.RoleRules
+
+		switch role.Kind {
+		case "Role":
+			rules, _ = c.GetRole(namespace, role.Name)
+		case "ClusterRole":
+			rules, _ = c.GetClusterRole(role.Name)
+		}
+
+		result = append(result, models.RoleItem{
+			Kind:           role.Kind,
+			Name:           role.Name,
+			Resources:      rules,
+			ResourcesCount: len(rules),
+		})
+	}
+
+	// Make response
 	resp := models.GetRolesByServiceAccountResp{
 		Roles:      result,
 		RolesCount: len(result),
@@ -64,6 +90,8 @@ func (e *Endpoints) GetRole(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	resp := models.GetRoleResp{
+		Kind:           "Role",
+		Name:           role,
 		Resources:      result,
 		ResourcesCount: len(result),
 	}
@@ -95,6 +123,8 @@ func (e *Endpoints) GetClusterRole(w http.ResponseWriter, r *http.Request, ps ht
 	}
 
 	resp := models.GetClusterRoleResp{
+		Kind:           "ClusterRole",
+		Name:           crole,
 		Resources:      result,
 		ResourcesCount: len(result),
 	}
