@@ -29,6 +29,9 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	}
 
 	for _, rb := range rbList.Items {
+		if len(rb.Subjects) == 0 {
+			continue
+		}
 		if rb.Subjects[0].Name == serviceAccount {
 			result = append(result, RoleResult{
 				Kind: rb.RoleRef.Kind,
@@ -44,6 +47,9 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	}
 
 	for _, crb := range crbList.Items {
+		if len(crb.Subjects) == 0 {
+			continue
+		}
 		if crb.Subjects[0].Name == serviceAccount {
 			result = append(result, RoleResult{
 				Kind: crb.RoleRef.Kind,
