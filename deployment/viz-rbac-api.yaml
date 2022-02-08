@@ -100,7 +100,14 @@ spec:
         imagePullPolicy: Always # for development. use IfNotPresent for production
         ports:
         - name: http
-          containerPort: 8000
+          containerPort: 22000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "0.5"
+          limits:
+            memory: "256Mi"
+            cpu: "1.0"
 
 ---
 # api-service.yaml
@@ -117,5 +124,59 @@ spec:
     app: viz-rbac-api
   ports:
   - name: http
-    port: 8000
-    targetPort: 8000
+    port: 22000
+    targetPort: 22000
+
+---
+# web-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: viz-rbac-web
+  namespace: viz-rbac
+  labels:
+    app: viz-rbac-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: viz-rbac-web
+  template:
+    metadata:
+      labels:
+        app: viz-rbac-web
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: viz-rbac-api
+        image: freckie/viz-rbac-web:0.0.1
+        imagePullPolicy: Always # for development. use IfNotPresent for production
+        ports:
+        - name: http
+          containerPort: 22001
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "0.5"
+          limits:
+            memory: "512Mi"
+            cpu: "1.0"
+
+---
+# web-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: viz-rbac-web
+  namespace: viz-rbac
+  labels:
+    app: viz-rbac-web
+spec:
+  type: NodePort
+  selector:
+    app: viz-rbac-api
+  ports:
+  - name: http
+    port: 22001
+    targetPort: 22001
+    nodePort: 22001
