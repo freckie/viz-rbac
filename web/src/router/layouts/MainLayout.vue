@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <SideBar id="sidebar" />
-    <v-content>
+    <v-content id="main-content">
       <v-main>
         <router-view />
       </v-main>
@@ -24,5 +24,11 @@ export default {
 #sidebar {
   position: fixed;
   display: block;
+  z-index: 1000;
+}
+
+#main-content {
+  width: 95%;
+  margin: 0 auto;
 }
 </style>

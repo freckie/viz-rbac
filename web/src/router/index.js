@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import MainLayout from '@/router/layouts/MainLayout.vue'
 
 import HomeView from '@/router/views/HomeView.vue'
+import DashboardView from '@/router/views/DashboardView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -14,8 +15,13 @@ const router = createRouter({
       children: [
         {
           path: '/home',
-          name: 'HomeView',
+          name: 'Home',
           component: HomeView
+        },
+        {
+          path: '/dashboard',
+          name: 'Dashboard',
+          component: DashboardView
         }
       ]
     }

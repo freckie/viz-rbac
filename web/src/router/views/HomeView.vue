@@ -1,6 +1,5 @@
 <template>
-  <h3>home</h3>
-  <Home msg="Hi RBAC!" />
+  <Home msg="Welcome to viz-rbac Dashboard !" />
 </template>
 
 <script setup>
