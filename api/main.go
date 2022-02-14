@@ -32,6 +32,7 @@ func main() {
 	router.GET("/api/res/v1/namespaces/:namespace/cluster-roles/:crole", ep.GetClusterRole)
 
 	// Aggregated endpoints for visualization
+	router.GET("/api/agg/v1/heatmap/sa-res/:namespace", ep.GetHeatmapSARes)
 
 	// Serve
 	log.Println("Starting HTTP API Server on port", port)

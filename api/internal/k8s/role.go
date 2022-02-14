@@ -29,7 +29,7 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	}
 
 	for _, rb := range rbList.Items {
-		if len(rb.Subjects) == 0 {
+		if (len(rb.Subjects) == 0) || (rb.Kind != "ServiceAccount") {
 			continue
 		}
 		if rb.Subjects[0].Name == serviceAccount {
@@ -47,10 +47,54 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	}
 
 	for _, crb := range crbList.Items {
-		if len(crb.Subjects) == 0 {
+		if (len(crb.Subjects) == 0) || (crb.Kind != "ServiceAccount") {
 			continue
 		}
 		if crb.Subjects[0].Name == serviceAccount {
+			result = append(result, RoleResult{
+				Kind: crb.RoleRef.Kind,
+				Name: crb.RoleRef.Name,
+			})
+		}
+	}
+
+	return result, nil
+}
+
+// GetRolesByUser returns a list of Roles|ClusterRoles bound to a specific User.
+func (c *K8SClient) GetRolesByUser(username string) ([]RoleResult, error) {
+	cs := c.clientset
+	result := make([]RoleResult, 0)
+
+	// Querying RoleBindings
+	rbList, err := cs.RbacV1().RoleBindings("").List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return result, err
+	}
+
+	for _, rb := range rbList.Items {
+		if (len(rb.Subjects) == 0) || (rb.Kind != "User") {
+			continue
+		}
+		if rb.Subjects[0].Name == username {
+			result = append(result, RoleResult{
+				Kind: rb.RoleRef.Kind,
+				Name: rb.RoleRef.Name,
+			})
+		}
+	}
+
+	// Querying ClusterRoleBindings
+	crbList, err := cs.RbacV1().ClusterRoleBindings().List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return result, err
+	}
+
+	for _, crb := range crbList.Items {
+		if (len(crb.Subjects) == 0) || (crb.Kind != "User") {
+			continue
+		}
+		if crb.Subjects[0].Name == username {
 			result = append(result, RoleResult{
 				Kind: crb.RoleRef.Kind,
 				Name: crb.RoleRef.Name,
