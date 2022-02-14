@@ -19,8 +19,18 @@ const router = createRouter({
           component: HomeView
         },
         {
-          path: '/dashboard',
-          name: 'Dashboard',
+          path: '/sa',
+          name: 'ServiceAccount Dashboard',
+          component: DashboardView
+        },
+        {
+          path: '/ua',
+          name: 'UserAccount Dashboard',
+          component: DashboardView
+        },
+        {
+          path: '/csr',
+          name: 'CSR Panel',
           component: DashboardView
         }
       ]

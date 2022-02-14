@@ -19,9 +19,21 @@
         >
         </v-list-item>
         <v-list-item
-          prepend-icon="mdi-chart-bar"
-          title="Dashboard"
-          :to="links.dashboard"
+          prepend-icon="mdi-laptop"
+          title="ServiceAccounts Panel"
+          :to="links.sa"
+        >
+        </v-list-item>
+        <v-list-item
+          prepend-icon="mdi-account"
+          title="UserAccounts Panel"
+          :to="links.ua"
+        >
+        </v-list-item>
+        <v-list-item
+          prepend-icon="mdi-certificate-outline"
+          title="CSR Panel"
+          :to="links.csr"
         >
         </v-list-item>
       </v-list>
@@ -36,7 +48,9 @@ export default {
     return {
       links: {
         home: '/home',
-        dashboard: '/dashboard'
+        sa: '/sa',
+        ua: '/ua',
+        csr: '/csr'
       }
     }
   }
