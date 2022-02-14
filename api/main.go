@@ -23,11 +23,15 @@ func main() {
 
 	// Setting http router
 	router := httprouter.New()
-	router.GET("/namespaces", ep.GetNamespaces)
-	router.GET("/namespaces/:namespace/service-accounts", ep.GetServiceAccounts)
-	router.GET("/namespaces/:namespace/service-accounts/:sa/roles", ep.GetRolesByServiceAccount)
-	router.GET("/namespaces/:namespace/roles/:role", ep.GetRole)
-	router.GET("/namespaces/:namespace/cluster-roles/:crole", ep.GetClusterRole)
+
+	// Resource endpoints
+	router.GET("/api/res/v1/namespaces", ep.GetNamespaces)
+	router.GET("/api/res/v1/namespaces/:namespace/service-accounts", ep.GetServiceAccounts)
+	router.GET("/api/res/v1/namespaces/:namespace/service-accounts/:sa/roles", ep.GetRolesByServiceAccount)
+	router.GET("/api/res/v1/namespaces/:namespace/roles/:role", ep.GetRole)
+	router.GET("/api/res/v1/namespaces/:namespace/cluster-roles/:crole", ep.GetClusterRole)
+
+	// Aggregated endpoints for visualization
 
 	// Serve
 	log.Println("Starting HTTP API Server on port", port)

@@ -11,7 +11,7 @@ import (
 )
 
 // GetRolesByServiceAccount returns a list of roles bound to a specific ServiceAccount.
-// GET /namespaces/{namespace}/service-accounts/{sa}/roles
+// GET /api/res/v1/namespaces/{namespace}/service-accounts/{sa}/roles
 func (e *Endpoints) GetRolesByServiceAccount(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	c := e.Client
 	var result []models.RoleItem
@@ -68,7 +68,7 @@ func (e *Endpoints) GetRolesByServiceAccount(w http.ResponseWriter, r *http.Requ
 }
 
 // GetRole describes a specific Role.
-// GET /namespaces/{namespace}/roles/{role}
+// GET /api/res/v1/namespaces/{namespace}/roles/{role}
 func (e *Endpoints) GetRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	c := e.Client
 
@@ -104,7 +104,7 @@ func (e *Endpoints) GetRole(w http.ResponseWriter, r *http.Request, ps httproute
 }
 
 // GetClusterRole describes a specific ClusterRole.
-// GET /namespaces/{namespace}/cluster-roles/{crole}
+// GET /api/res/v1/namespaces/{namespace}/cluster-roles/{crole}
 func (e *Endpoints) GetClusterRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	c := e.Client
 

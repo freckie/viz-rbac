@@ -9,6 +9,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// GetNamespaces returns a list of namepsaces.
+// GET /api/res/v1/namespaces
 func (e *Endpoints) GetNamespaces(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	c := e.Client
 

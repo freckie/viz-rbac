@@ -10,7 +10,7 @@ import (
 )
 
 // GetServiceAccounts returns a list of ServiceAccounts.
-// GET /namespaces/{namespace}/service-accounts
+// GET /api/res/v1/namespaces/{namespace}/service-accounts
 func (e *Endpoints) GetServiceAccounts(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	c := e.Client
 
