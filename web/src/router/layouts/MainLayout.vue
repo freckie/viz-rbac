@@ -1,11 +1,9 @@
 <template>
   <v-app>
     <SideBar id="sidebar" />
-    <v-content id="main-content">
-      <v-main>
-        <router-view />
-      </v-main>
-    </v-content>
+    <v-main id="app-main">
+      <router-view />
+    </v-main>
   </v-app>
 </template>
 
@@ -27,7 +25,7 @@ export default {
   z-index: 1000;
 }
 
-#main-content {
+#app-main {
   width: 95%;
   margin: 0 auto;
 }
