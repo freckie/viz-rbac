@@ -29,7 +29,7 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	}
 
 	for _, rb := range rbList.Items {
-		if (len(rb.Subjects) == 0) || (rb.Kind != "ServiceAccount") {
+		if (len(rb.Subjects) == 0) || (rb.Subjects[0].Kind != "ServiceAccount") {
 			continue
 		}
 		if rb.Subjects[0].Name == serviceAccount {
@@ -47,7 +47,7 @@ func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) (
 	}
 
 	for _, crb := range crbList.Items {
-		if (len(crb.Subjects) == 0) || (crb.Kind != "ServiceAccount") {
+		if (len(crb.Subjects) == 0) || (crb.Subjects[0].Kind != "ServiceAccount") {
 			continue
 		}
 		if crb.Subjects[0].Name == serviceAccount {
@@ -73,7 +73,7 @@ func (c *K8SClient) GetRolesByUser(username string) ([]RoleResult, error) {
 	}
 
 	for _, rb := range rbList.Items {
-		if (len(rb.Subjects) == 0) || (rb.Kind != "User") {
+		if (len(rb.Subjects) == 0) || (rb.Subjects[0].Kind != "User") {
 			continue
 		}
 		if rb.Subjects[0].Name == username {
@@ -91,7 +91,7 @@ func (c *K8SClient) GetRolesByUser(username string) ([]RoleResult, error) {
 	}
 
 	for _, crb := range crbList.Items {
-		if (len(crb.Subjects) == 0) || (crb.Kind != "User") {
+		if (len(crb.Subjects) == 0) || (crb.Subjects[0].Kind != "User") {
 			continue
 		}
 		if crb.Subjects[0].Name == username {
