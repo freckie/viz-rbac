@@ -16,7 +16,7 @@ func (e *Endpoints) GetHeatmapSARes(w http.ResponseWriter, r *http.Request, ps h
 	c := e.Client
 
 	// Parse parameters
-	namespace := ps.ByName("namespaces")
+	namespace := ps.ByName("namespace")
 	if namespace == "" {
 		ihttp.ResponseError(w, 404, "Namespace not found.")
 		return
