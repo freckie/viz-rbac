@@ -148,7 +148,7 @@ spec:
     spec:
       serviceAccountName: default
       containers:
-      - name: viz-rbac-api
+      - name: viz-rbac-web
         image: freckie/viz-rbac-web:0.0.1
         imagePullPolicy: Always # for development. use IfNotPresent for production
         ports:
@@ -174,7 +174,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: viz-rbac-api
+    app: viz-rbac-web
   ports:
   - name: http
     port: 30010
