@@ -151,6 +151,11 @@ spec:
       - name: viz-rbac-web
         image: freckie/viz-rbac-web:0.0.1
         imagePullPolicy: Always # for development. use IfNotPresent for production
+        env:
+        - name: API_HOST
+          value: viz-rbac-api
+        - name: API_PORT
+          value: "30011"
         ports:
         - name: http
           containerPort: 80
