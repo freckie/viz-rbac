@@ -100,7 +100,7 @@ spec:
         imagePullPolicy: Always # for development. use IfNotPresent for production
         ports:
         - name: http
-          containerPort: 22000
+          containerPort: 8000
         resources:
           requests:
             memory: "128Mi"
@@ -124,8 +124,8 @@ spec:
     app: viz-rbac-api
   ports:
   - name: http
-    port: 22000
-    targetPort: 22000
+    port: 30011
+    targetPort: 8000
 
 ---
 # web-deployment.yaml
@@ -153,7 +153,7 @@ spec:
         imagePullPolicy: Always # for development. use IfNotPresent for production
         ports:
         - name: http
-          containerPort: 22001
+          containerPort: 80
         resources:
           requests:
             memory: "256Mi"
@@ -177,6 +177,6 @@ spec:
     app: viz-rbac-api
   ports:
   - name: http
-    port: 22001
-    targetPort: 22001
-    nodePort: 22001
+    port: 30010
+    targetPort: 80
+    nodePort: 30010
