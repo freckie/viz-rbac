@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import MainLayout from '@/router/layouts/MainLayout.vue'
 
 import HomeView from '@/router/views/HomeView.vue'
-import DashboardView from '@/router/views/DashboardView.vue'
+import SAPanelView from '@/router/views/SAPanelView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -20,18 +20,18 @@ const router = createRouter({
         },
         {
           path: '/sa',
-          name: 'ServiceAccount Dashboard',
-          component: DashboardView
+          name: 'ServiceAccount Panel',
+          component: SAPanelView
         },
         {
           path: '/ua',
-          name: 'UserAccount Dashboard',
-          component: DashboardView
+          name: 'UserAccount Panel',
+          component: SAPanelView
         },
         {
           path: '/csr',
           name: 'CSR Panel',
-          component: DashboardView
+          component: SAPanelView
         }
       ]
     }

@@ -4,10 +4,13 @@
 </template>
 
 <script>
-import * as d3 from 'd3'
+import { createHeatmap } from "@/utils/heatmap"
 
 export default {
-  name: 'DashboardHeatmap',
+  name: 'Heatmap',
+  props: {
+    namespace: String
+  },
   data: () => {
     return {
     }
@@ -31,7 +34,12 @@ export default {
         return '#27641910' // .16
       }
     },
-    generateHeatmap() {
+    breakString(str) {
+      const limit = 7
+      const _fn = (str, limit) => (str.length <= limit) ? str : (str.substr(0, limit) + '...')
+      return _fn(str, limit)
+    },
+    getData() {
       const dummy = JSON.parse(`
         {
           "ns1": {
@@ -69,62 +77,21 @@ export default {
             }
           }
         }`)
-
-      // Const variables
-      const cellSize = 17
-      const labelFontsize = 13
-      const margin = { top: 50, right: 50, bottom: 50, left: 50 }
-      const calcColor = this.calcColor
-
+      
       // Data
-      const _ns = dummy['ns1']
+      const _ns = dummy[this.namespace]
       let _x = new Set()
       for (const [k, v] of Object.entries(_ns)) {
         Object.keys(_ns[k]).forEach(it => _x.add(it))
       }
-      const XLabels = Array.from(_x)
-      const YLabels = Object.keys(_ns)
-      const Values = YLabels.map(y => XLabels.map(x => _ns[y][x]))
-      
-      // Compute values
-      const svgWidth = 928
-      const svgHeight = cellSize * (YLabels.length + 2)
+      const xlabels = Array.from(_x)
+      const ylabels = Object.keys(_ns)
+      const data = ylabels.map(y => xlabels.map(x => _ns[y][x]))
 
-      // Create svg element
-      const svg = d3.select('#d3-wrapper')
-        .append('svg')
-          .attr('width', svgWidth + margin.left + margin.right)
-          .attr('height', svgHeight + margin.top + margin.bottom)
-        .append('g')
-          .attr('transform', "translate(" + margin.left + "," + margin.top + ")")
-
-      // Create cells
-      Values.forEach((rowValue, j) => {
-        let yValue = j * cellSize + 1
-        const row = svg.append('g')
-            .attr('class', 'row')
-            .attr('x', 1)
-            .attr('y', yValue)
-
-        row.append('text')
-            .attr('x', -40)
-            .attr('y', yValue + labelFontsize)
-            .attr('font-weight', '400')
-            .attr('font-size', labelFontsize)
-            .text(YLabels[j])
-          .enter()
-        
-        row.selectAll('.cell')
-          .data(rowValue)
-          .enter()
-          .append('rect')
-            .attr('class', 'cell')
-            .attr('x', (d, i) => i * cellSize + 1)
-            .attr('y', yValue)
-            .attr('width', cellSize - 1)
-            .attr('height', cellSize - 1)
-            .attr('fill', d => calcColor(d))
-      })
+      return { xlabels, ylabels, data }
+    },
+    generateHeatmap() {
+      createHeatmap('#d3-wrapper', this.getData(), this.calcColor, this.breakString)
     }
   }
 }
