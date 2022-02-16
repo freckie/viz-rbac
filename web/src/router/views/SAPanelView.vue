@@ -15,6 +15,7 @@
         v-model="namespace"
         :items="namespaces"
         single-line
+        dense
         label="Select Namespace .."
         hide-details
       >
@@ -23,7 +24,7 @@
 
     </v-toolbar>
 
-    <Heatmap namespace="ns1"/>
+    <Heatmap :namespace="namespace"/>
   </div>
 </template>
 
@@ -38,7 +39,22 @@ export default {
   data: () => {
     return {
       namespace: '',
-      namespaces: ['ns1', 'ns2']
+      namespaces: ['none']
+    }
+  },
+  methods: {
+    getNamespaces() {
+      const vm = this
+      const host = this.$host
+
+      this.$axios.get(host + '/api/res/v1/namespaces')
+        .then((resp) => {
+          vm.namespaces = resp.data.data.namespaces
+        })
+        .catch((error) => {
+          console.log('[ERROR]', error)
+          alert('Unexpected error.')
+        })
     }
   }
 }
