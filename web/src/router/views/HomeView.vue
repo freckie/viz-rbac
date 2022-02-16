@@ -2,6 +2,13 @@
   <Home msg="Welcome to viz-rbac Dashboard !" />
 </template>
 
-<script setup>
+<script>
 import Home from '@/components/Home.vue'
+
+export default {
+  name: 'HomeView',
+  components: {
+    Home
+  }
+}
 </script>

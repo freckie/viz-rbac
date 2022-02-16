@@ -1,40 +1,38 @@
 <template>
   <v-card>
     <v-navigation-drawer
-      theme="dark"
+      dark
+      hide-overlay
+      app
       permanent
     >
-      <v-list nav>
-        <v-list-item
-          title="viz-rbac Dashboard"
-        >
-        </v-list-item>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="text-h6">
+            viz-rbac Dashboard
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
+      <v-list
+        dense
+        nav
+      >
         <v-list-item
-          prepend-icon="mdi-home"
-          title="Welcome!"
-          :to="links.home"
+          v-for="item in items"
+          :key="item.title"
+          :to="item.link"
+          link
         >
-        </v-list-item>
-        <v-list-item
-          prepend-icon="mdi-laptop"
-          title="ServiceAccounts Panel"
-          :to="links.sa"
-        >
-        </v-list-item>
-        <v-list-item
-          prepend-icon="mdi-account"
-          title="UserAccounts Panel"
-          :to="links.ua"
-        >
-        </v-list-item>
-        <v-list-item
-          prepend-icon="mdi-certificate-outline"
-          title="CSR Panel"
-          :to="links.csr"
-        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -46,12 +44,28 @@ export default {
   name: 'SideBar',
   data: () => {
     return {
-      links: {
-        home: '/home',
-        sa: '/sa',
-        ua: '/ua',
-        csr: '/csr'
-      }
+      items: [
+        {
+          title: 'Welcome!',
+          icon: 'mdi-home',
+          link: '/home'
+        },
+        {
+          title: 'ServiceAccount Panel',
+          icon: 'mdi-laptop',
+          link: '/sa'
+        },
+        {
+          title: 'UserAccount Panel',
+          icon: 'mdi-account',
+          link: '/ua'
+        },
+        {
+          title: 'CSR Panel',
+          icon: 'mdi-certificate-outline',
+          link: '/csr'
+        },
+      ]
     }
   }
 }

@@ -1,23 +1,30 @@
 <template>
-  <v-layout>
-    <v-app-bar
+  <div>
+    <v-toolbar
       id="top-bar"
-      density="compact"
       absolute
       dark
+      dense
     >
-      <v-app-bar-title>ServiceAccount Panel</v-app-bar-title>
       
-      <v-spacer />
+    <v-col
+      cols="6"
+      sm="3"
+    >
+      <v-select
+        v-model="namespace"
+        :items="namespaces"
+        single-line
+        label="Select Namespace .."
+        hide-details
+      >
+      </v-select>
+    </v-col>
 
-      <!-- Todo: Namespace Selection -->
-      <!-- -->
-    </v-app-bar>
+    </v-toolbar>
 
-    <v-main id="main-wrapper">
-      <Heatmap namespace="ns1"/>
-    </v-main>
-  </v-layout>
+    <Heatmap namespace="ns1"/>
+  </div>
 </template>
 
 <script>
@@ -30,6 +37,7 @@ export default {
   },
   data: () => {
     return {
+      namespace: '',
       namespaces: ['ns1', 'ns2']
     }
   }
@@ -39,10 +47,5 @@ export default {
 <style scoped>
 #top-bar {
   width: 100%;
-}
-
-#main-wrapper {
-  width: 90%;
-  margin: 0 auto;
 }
 </style>
