@@ -1,5 +1,6 @@
 # Fr3ky add
 .vscode/
+.do-not-upload/
 
 # Logs
 logs
