@@ -8,6 +8,7 @@ import (
 	ik8s "github.com/freckie/viz-rbac/internal/k8s"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -35,6 +36,7 @@ func main() {
 	router.GET("/api/agg/v1/heatmap/sa-res/:namespace", ep.GetHeatmapSARes)
 
 	// Serve
+	handler := cors.AllowAll().Handler(router)
 	log.Println("Starting HTTP API Server on port", port)
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
