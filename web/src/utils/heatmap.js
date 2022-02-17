@@ -6,7 +6,6 @@ const createHeatmap = (svgId,
   breakStringFn
   ) => {
     // Const variables
-    const yLabelLengthLimit = 7
     const cellSize = 17
     const labelFontsize = 13
     const margin = { top: 50, right: 50, bottom: 50, left: 50 }
@@ -50,6 +49,9 @@ const createHeatmap = (svgId,
           .attr('width', cellSize - 1)
           .attr('height', cellSize - 1)
           .attr('fill', d => calcColorFn(d))
+      
+      // To Do :: Show xlabels on mouse hover event
+      console.log(xlabels)
     })
   }
 
