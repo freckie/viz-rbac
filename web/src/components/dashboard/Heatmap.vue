@@ -81,7 +81,7 @@ export default {
       // Data
       const _ns = dummy[this.namespace]
       let _x = new Set()
-      for (const [k, v] of Object.entries(_ns)) {
+      for (const [k] of Object.entries(_ns)) {
         Object.keys(_ns[k]).forEach(it => _x.add(it))
       }
       const xlabels = Array.from(_x)
