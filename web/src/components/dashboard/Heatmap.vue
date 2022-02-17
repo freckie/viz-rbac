@@ -8,15 +8,11 @@ import { createHeatmap } from "@/utils/heatmap"
 
 export default {
   name: 'Heatmap',
-  props: {
-    namespace: String
-  },
   data: () => {
     return {
+      namespace: '',
+      heatmapKind: ''
     }
-  },
-  mounted() {
-    this.generateHeatmap()
   },
   methods: {
     calcColor(verbs) {
@@ -39,60 +35,52 @@ export default {
       const _fn = (str, limit) => (str.length <= limit) ? str : (str.substr(0, limit) + '...')
       return _fn(str, limit)
     },
-    getData() {
-      const dummy = JSON.parse(`
-        {
-          "ns1": {
-            "sa1": {
-              "res11": ["get", "list", "watch"],
-              "res12": ["get", "list", "watch"],
-              "res13": ["get", "list", "watch", "update", "delete"],
-              "res14": ["get", "list", "watch"]
-            },
-            "sa2": {
-              "res11": [],
-              "res12": [],
-              "res13": ["get", "list", "watch", "update", "delete"],
-              "res14": ["get", "list", "watch"],
-              "res15": ["get", "list", "watch"]
-            },
-            "sa3": {
-              "res14": [],
-              "res15": ["get", "list", "watch", "update"]
-            },
-            "sa4": {
-              "res11": ["get"],
-              "res12": [],
-              "res13": ["get", "list", "watch", "update", "delete"],
-              "res14": ["get", "list", "watch"],
-              "res15": ["get", "list", "watch"],
-              "res16": ["get", "list", "watch", "update"],
-              "res17": ["get", "list", "watch", "patch"],
-              "res18": ["get", "list", "watch", "update", "patch", "create", "delete", "deletecollection"],
-              "res19": ["get", "list", "watch"]
-            },
-            "sa5": {
-              "res11": ["get"],
-              "res12": ["get"]
-            }
-          }
-        }`)
-      
-      // Data
-      const _ns = dummy[this.namespace]
-      let _x = new Set()
-      for (const [k] of Object.entries(_ns)) {
-        Object.keys(_ns[k]).forEach(it => _x.add(it))
-      }
-      const xlabels = Array.from(_x)
-      const ylabels = Object.keys(_ns)
-      const data = ylabels.map(y => xlabels.map(x => _ns[y][x]))
+    getData(heatmapKind, namespace) {
+      return new Promise((resolve, reject) => {
+        const host = this.$host
+        var _ns
 
-      return { xlabels, ylabels, data }
+        // Axios
+        this.$axios.get(host + '/api/agg/v1/heatmap/' + heatmapKind + '/' + namespace)
+          .then((resp) => {
+            _ns = resp.data.data
+
+            // Data
+            let _x = new Set()
+            for (const [k] of Object.entries(_ns)) {
+              Object.keys(_ns[k]).forEach(it => _x.add(it))
+            }
+            const xlabels = Array.from(_x)
+            const ylabels = Object.keys(_ns)
+            const data = ylabels.map(y => xlabels.map(x => _ns[y][x]))
+
+            resolve({ xlabels, ylabels, data })
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
     },
-    generateHeatmap() {
-      createHeatmap('#d3-wrapper', this.getData(), this.calcColor, this.breakString)
+    generateHeatmap(heatmapKind, namespace) {
+      this.heatmapKind = heatmapKind
+      this.namespace = namespace
+
+      this.getData(heatmapKind, namespace)
+        .then(data => {
+          createHeatmap('#d3-wrapper', data, this.calcColor, this.breakString)    
+        })
+        .catch((error) => {
+          console.log('[ERROR]', error)
+          alert('Unexpected error occurred.')
+        })
     }
   }
 }
 </script>
+
+<style scoped>
+#d3-wrapper {
+  width: 90%;
+  margin: 0 auto;
+}
+</style>

@@ -9,7 +9,12 @@ Vue.config.productionTip = false
 
 // Axios setting
 Vue.prototype.$axios = axios
-Vue.prototype.$host = 'http://' + process.env.API_HOST + ':' + process.env.API_PORT
+
+// ENV
+Vue.prototype.$host = ''
+Vue.prototype.$setHost = (host) => {
+  Vue.prototype.$host = host
+}
 
 new Vue({
   router,

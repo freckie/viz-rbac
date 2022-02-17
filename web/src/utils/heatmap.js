@@ -14,6 +14,9 @@ const createHeatmap = (svgId,
     const svgWidth = 928
     const svgHeight = cellSize * (ylabels.length + 2)
 
+    // Clear svg
+    d3.select(svgId).selectAll('svg > *').remove()
+
     // Create svg element
     const svg = d3.select(svgId)
       .append('svg')
@@ -41,7 +44,7 @@ const createHeatmap = (svgId,
       
       row.selectAll('.cell')
         .data(rowValue)
-        .enter()
+          .enter()
         .append('rect')
           .attr('class', 'cell')
           .attr('x', (d, i) => i * cellSize + 1)

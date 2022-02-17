@@ -5,26 +5,26 @@
       absolute
       dark
       dense
+      height="48"
     >
-      
-    <v-col
-      cols="6"
-      sm="3"
-    >
-      <v-select
-        v-model="namespace"
-        :items="namespaces"
-        single-line
-        dense
-        label="Select Namespace .."
-        hide-details
+      <v-col
+        cols="6"
       >
-      </v-select>
-    </v-col>
-
+        <v-select
+          v-model="namespace"
+          :items="namespaces"
+          single-line
+          dense
+          label="Select Namespace .."
+          hide-details
+        >
+        </v-select>
+      </v-col>
     </v-toolbar>
 
-    <Heatmap :namespace="namespace"/>
+    <div id="heatmap-wrapper">
+      <Heatmap ref="heatmap" />
+    </div>
   </div>
 </template>
 
@@ -42,8 +42,16 @@ export default {
       namespaces: ['none']
     }
   },
+  watch: {
+    namespace(newVal) {
+      this.$refs.heatmap.generateHeatmap('sa-res', newVal)
+    }
+  },
+  mounted() {
+    this.setNamespaces()
+  },
   methods: {
-    getNamespaces() {
+    setNamespaces() {
       const vm = this
       const host = this.$host
 
@@ -63,5 +71,9 @@ export default {
 <style scoped>
 #top-bar {
   width: 100%;
+}
+
+#heatmap-wrapper {
+  margin-top: 48px;
 }
 </style>

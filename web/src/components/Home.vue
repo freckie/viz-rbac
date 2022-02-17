@@ -4,25 +4,33 @@
 
     <h1>{{ msg }}</h1>
 
-    <p>
-      Recommended IDE setup:
-      <a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
-      +
-      <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-    </p>
+    <v-divider></v-divider>
 
-    <p>
-      <a href="https://vitejs.dev/guide/features.html" target="_blank">
-        Vite Documentation
-      </a>
-      |
-      <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Documentation</a>
-    </p>
+    <div id="setting">
+      <h3>API Setting</h3>
+      <v-row>
+        
+        <v-col cols="6">
+          <v-text-field
+            v-model="apiUrl"
+            append-outer-icon="mdi-check"
+            clear-icon="mdi-close-circle"
+            clearable
+            label="API URL"
+            type="text"
+            hint="e.g. http://example.com:30000"
+            @click:append-outer="setApiUrl"
+          ></v-text-field>
+        </v-col>
+      </v-row>
 
-    <p>
-      Edit
-      <code>components/Home.vue</code> to test hot module replacement.
-    </p>
+      <v-badge
+        inline
+        :color="testResult.color"
+      >
+        Test for API connection :: {{ testResult.msg }}
+      </v-badge>
+    </div>
   </div>
 </template>
 
@@ -31,6 +39,48 @@ export default {
   name: 'Home',
   props: {
     msg: String
+  },
+  data: () => {
+    return {
+      apiUrl: '',
+      testResult: {
+        msg: 'Waiting',
+        color: '#ffff66'
+      }
+    }
+  },
+  mounted() {
+    this.getCurrentApiUrl()
+  },
+  methods: {
+    setApiUrl() {
+      this.$setHost(this.apiUrl)
+      this.connectionTest()
+    },
+    getCurrentApiUrl() {
+      const host = this.$host
+      if (host == undefined || host.length == 0 || host == '' || host == null) {
+        this.apiUrl = ''
+      } else {
+        this.apiUrl = host
+      }
+    },
+    connectionTest() {
+      const host = this.$host
+      const vm = this
+
+      this.$axios.get(host + '/api/res/v1/namespaces')
+        .then((resp) => {
+          console.log('Connection Test :', resp.data.status_code)
+          vm.testResult.msg = 'Success'
+          vm.testResult.color = '#97d700'
+        })
+        .catch((error) => {
+          console.log('Connection Test :', error)
+          vm.testResult.msg = 'Error'
+          vm.testResult.color = '#e22012'
+        })
+    }
   }
 }
 </script>
