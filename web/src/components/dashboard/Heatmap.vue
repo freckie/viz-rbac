@@ -27,12 +27,12 @@ export default {
       } else if (verbsSet.has("get") || verbsSet.has("list") || verbsSet.has("watch")) {
         return '#27641954' // .33
       } else {
-        return '#27641910' // .16
+        return '#27641907' // .07
       }
     },
     breakString(str) {
       const limit = 7
-      const _fn = (str, limit) => (str.length <= limit) ? str : (str.substr(0, limit) + '...')
+      const _fn = (str, limit) => (str.length <= limit) ? str + '   ' : (str.substr(0, limit) + '...')
       return _fn(str, limit)
     },
     getData(heatmapKind, namespace) {
@@ -78,9 +78,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #d3-wrapper {
-  width: 90%;
-  margin: 0 auto;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: scroll;
+
+  .ylabel {
+    cursor: pointer;
+  }
 }
 </style>
