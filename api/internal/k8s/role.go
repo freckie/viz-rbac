@@ -16,6 +16,7 @@ type RoleResult struct {
 	Kind string `json:"kind"`
 	Name string `json:"name"`
 }
+type RoleRules map[string][]string
 
 // GetRolesByServiceAccount returns a list of Roles|ClusterRoles bound to a specific ServiceAccount.
 func (c *K8SClient) GetRolesByServiceAccount(namespace, serviceAccount string) ([]RoleResult, error) {
@@ -104,8 +105,6 @@ func (c *K8SClient) GetRolesByUser(username string) ([]RoleResult, error) {
 
 	return result, nil
 }
-
-type RoleRules map[string][]string
 
 // GetRole returns result from describing a specific Role.
 func (c *K8SClient) GetRole(namespace, roleName string) (RoleRules, error) {

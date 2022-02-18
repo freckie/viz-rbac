@@ -4,8 +4,6 @@ import (
 	"net/http"
 
 	ihttp "github.com/freckie/viz-rbac/internal/http"
-	ik8s "github.com/freckie/viz-rbac/internal/k8s"
-	"github.com/freckie/viz-rbac/models"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -22,34 +20,10 @@ func (e *Endpoints) GetHeatmapSARes(w http.ResponseWriter, r *http.Request, ps h
 		return
 	}
 
-	// Get ServiceAccounts
-	saList, err := c.GetServiceAccounts(namespace)
+	resp, err := c.GetHeatmapSAResData(namespace)
 	if err != nil {
 		ihttp.ResponseError(w, 500, err.Error())
 		return
-	}
-
-	// Get resources and verbs
-	resp := make(models.GetHeatmapSAResResp)
-	for _, sa := range saList {
-		roles, err := c.GetRolesByServiceAccount(namespace, sa.Name)
-		if err != nil {
-			continue
-		}
-
-		// Parse Rules
-		for _, role := range roles {
-			var rules ik8s.RoleRules
-
-			switch role.Kind {
-			case "Role":
-				rules, _ = c.GetRole(namespace, role.Name)
-			case "ClusterRole":
-				rules, _ = c.GetClusterRole(role.Name)
-			}
-
-			resp[sa.Name] = rules
-		}
 	}
 
 	// Make response
