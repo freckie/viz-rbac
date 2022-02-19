@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { createHeatmap } from "@/utils/heatmap"
+import { clearHeatmap, createHeatmap } from "@/utils/heatmap"
 
 export default {
   name: 'Heatmap',
@@ -15,30 +15,12 @@ export default {
     }
   },
   methods: {
-    calcColor(verbs) {
-      // rgb(39, 100, 25)
-      if (verbs == undefined || verbs.length == 0) return '#27641910' // .0
-
-      let verbsSet = new Set(verbs)
-      if (verbsSet.has("delete") || verbsSet.has("deletecollection")) {
-        return '#276419' // 1.00
-      } else if (verbsSet.has("update") || verbsSet.has("create") || verbsSet.has("patch")) {
-        return '#276419a8' // .66
-      } else if (verbsSet.has("get") || verbsSet.has("list") || verbsSet.has("watch")) {
-        return '#27641954' // .33
-      } else {
-        return '#27641907' // .07
-      }
-    },
-    breakString(str) {
-      const limit = 7
-      const _fn = (str, limit) => (str.length <= limit) ? str + '   ' : (str.substr(0, limit) + '...')
-      return _fn(str, limit)
-    },
     getData(heatmapKind, namespace) {
       return new Promise((resolve, reject) => {
         const host = this.$host
         var _ns
+
+        clearHeatmap('#d3-wrapper')
 
         // Axios
         this.$axios.get(host + '/api/agg/v1/heatmap/' + heatmapKind + '/' + namespace)
@@ -67,12 +49,32 @@ export default {
 
       this.getData(heatmapKind, namespace)
         .then(data => {
-          createHeatmap('#d3-wrapper', data, this.calcColor, this.breakString)    
+          createHeatmap('#d3-wrapper', data, this._calcColor, this._breakString)    
         })
         .catch((error) => {
           console.log('[ERROR]', error)
           alert('Unexpected error occurred.')
         })
+    },
+        _calcColor(verbs) {
+      // rgb(39, 100, 25)
+      if (verbs == undefined || verbs.length == 0) return '#27641910' // .0
+
+      let verbsSet = new Set(verbs)
+      if (verbsSet.has("delete") || verbsSet.has("deletecollection")) {
+        return '#276419' // 1.00
+      } else if (verbsSet.has("update") || verbsSet.has("create") || verbsSet.has("patch")) {
+        return '#276419a8' // .66
+      } else if (verbsSet.has("get") || verbsSet.has("list") || verbsSet.has("watch")) {
+        return '#27641954' // .33
+      } else {
+        return '#27641907' // .07
+      }
+    },
+    _breakString(str) {
+      const limit = 7
+      const _fn = (str, limit) => (str.length <= limit) ? str + '   ' : (str.substr(0, limit) + '...')
+      return _fn(str, limit)
     }
   }
 }

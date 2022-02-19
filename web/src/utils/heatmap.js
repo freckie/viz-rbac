@@ -1,13 +1,18 @@
 import * as d3 from 'd3'
 
+const clearHeatmap = (wrapperId) => {
+  d3.select(wrapperId).selectAll('svg').remove()
+  d3.select(wrapperId).select('.tooltip').remove()
+}
+
 const createHeatmap = (wrapperId, 
   { xlabels, ylabels, data },
   calcColorFn,
   breakStringFn
   ) => {
     // Const variables
-    const cellSize = 17
-    const interCellMargin = 1
+    const cellSize = 21
+    const interCellMargin = 2
     const cellStartingPoint = 35
     const labelFontsize = 13
     const margin = { top: 20, right: 50, bottom: 20, left: 50 }
@@ -17,8 +22,7 @@ const createHeatmap = (wrapperId,
     const svgHeight = cellSize * (ylabels.length + 2*interCellMargin)
 
     // Clear svg
-    d3.select(wrapperId).selectAll('svg').remove()
-    d3.select(wrapperId).select('.tooltip').remove()
+    clearHeatmap(wrapperId)
 
     // Create svg element
     const svg = d3.select(wrapperId)
@@ -27,38 +31,45 @@ const createHeatmap = (wrapperId,
         .attr('height', svgHeight + margin.top + margin.bottom)
       .append('g')
         .attr('transform', "translate(" + margin.left + "," + margin.top + ")")
-
+    
     // Create tooltip
     const tooltip = d3.select(wrapperId)
-      .append('div')
-        .style('opacity', 0)
-        .attr('class', 'tooltip')
-        .style('background-color', '#00000057')
-        .style('border', 'solid')
-        .style('border-width', '1px')
-        .style('border-radius', '4px')
-        .style('padding', '3px')
-    
+    .append('div')
+      .style('opacity', 0)
+      .attr('class', 'tooltip')
+      .style('position', 'fixed')
+      .style('background-color', '#00000057')
+      .style('border', 'solid')
+      .style('border-width', '1px')
+      .style('border-radius', '4px')
+      .style('padding', '3px')
+
     // Function for tooltip event
-    const tooltipMouseOver = () => {
+    const tooltipMouseOver = (event) => {
       tooltip.style('opacity', 1)
-      d3.select(this)
+      d3.select(event.target)
         .style('stroke', 'black')
         .style('opacity', 1)
     }
 
     const tooltipMouseMove = (event) => {
       let pointer = d3.pointer(event)
-      tooltip.html('Verbs : ' + event.target.attributes['data-verbs'].value)
-        .style('left', pointer[0] + 'px')
-        .style('top', pointer[1] + 'px')
+      tooltip.html(tooltipContent(event.target.attributes))
+        .style('left', (pointer[0] + 318) + 'px')
+        .style('top', (pointer[1] + 90) + 'px')
     }
 
-    const tooltipMouseLeave = () => {
+    const tooltipMouseLeave = (event) => {
       tooltip.style('opacity', 0)
-      d3.select(this)
+      d3.select(event.target)
         .style('stroke', 'none')
-        .style('opacity', 0)
+        .style('opacity', 0.8)
+    }
+
+    const tooltipContent = (eventAttr) => {
+      return '<b>Col</b> : <i>' + eventAttr['data-xlabel'].value + '</i> <br>' +
+        '<b>Row</b> : <i>' + eventAttr['data-ylabel'].value + '</i> <br>' +
+        '<b>Data</b> : <i>' + eventAttr['data-verbs'].value + '</i>'
     }
 
     // Create cells
@@ -87,16 +98,19 @@ const createHeatmap = (wrapperId,
           .attr('class', 'cell')
           .attr('x', (d, i) => cellStartingPoint + i * cellSize + 1*interCellMargin)
           .attr('y', yValue)
-          .attr('data-verbs', d => d == undefined ? JSON.stringify('[]') : JSON.stringify(d))
+          .attr('data-verbs', d => d == undefined ? JSON.stringify([]) : JSON.stringify(d))
           .attr('data-xlabel', (d, i) => xlabels[i])
           .attr('data-ylabel', ylabels[j])
           .attr('width', cellSize - 1*interCellMargin)
           .attr('height', cellSize - 1*interCellMargin)
           .attr('fill', d => calcColorFn(d))
+          .style('stroke-width', 2)
+          .style('stroke', 'none')
+          .style('opacity', 0.8)
         .on('mouseover', tooltipMouseOver)
         .on('mousemove', tooltipMouseMove)
         .on('mouseleave', tooltipMouseLeave)
     })
   }
 
-export { createHeatmap }
+export { clearHeatmap, createHeatmap }
