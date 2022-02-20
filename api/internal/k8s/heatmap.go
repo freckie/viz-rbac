@@ -33,16 +33,16 @@ func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules,
 		}
 
 		saName := rb.Subjects[0].Name
-		if result[saName] == nil {
-			result[saName] = make(RoleRules)
+		if !(utils.ContainsString(saNames, saName)) {
+			continue
 		}
 
 		role, _ := c.GetRole(namespace, rb.RoleRef.Name)
-		for k, v := range role {
-			if result[saName][k] == nil {
-				result[saName][k] = v
+		for res, verbs := range role {
+			if result[saName][res] == nil {
+				result[saName][res] = verbs
 			} else {
-				result[saName][k] = utils.ConcatString(result[saName][k], v)
+				result[saName][res] = utils.ConcatString(result[saName][res], verbs)
 			}
 		}
 	}
@@ -66,11 +66,11 @@ func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules,
 		}
 
 		role, _ := c.GetClusterRole(crb.RoleRef.Name)
-		for k, v := range role {
-			if result[saName][k] == nil {
-				result[saName][k] = v
+		for res, verbs := range role {
+			if result[saName][res] == nil {
+				result[saName][res] = verbs
 			} else {
-				result[saName][k] = utils.ConcatString(result[saName][k], v)
+				result[saName][res] = utils.ConcatString(result[saName][res], verbs)
 			}
 		}
 	}
