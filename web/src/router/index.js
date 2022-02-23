@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import HomeView from '@/router/views/HomeView.vue'
+import SettingView from '@/router/views/SettingView.vue'
 import SAPanelView from '@/router/views/SAPanelView.vue'
 
 Vue.use(VueRouter)
@@ -9,12 +9,12 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/setting'
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: HomeView
+    path: '/setting',
+    name: 'Setting',
+    component: SettingView
   },
   {
     path: '/sa',

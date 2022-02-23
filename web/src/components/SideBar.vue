@@ -46,9 +46,9 @@ export default {
     return {
       items: [
         {
-          title: 'Welcome!',
-          icon: 'mdi-home',
-          link: '/home'
+          title: 'Setting',
+          icon: 'mdi-cog',
+          link: '/setting'
         },
         {
           title: 'ServiceAccount Panel',

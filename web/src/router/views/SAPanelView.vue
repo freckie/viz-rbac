@@ -55,6 +55,12 @@ export default {
       const vm = this
       const host = this.$host
 
+      if (host == undefined || host == null || host == '') {
+        alert('API Host is not set yet.')
+        this.$router.push('/setting')
+        return
+      }
+
       this.$axios.get(host + '/api/res/v1/namespaces')
         .then((resp) => {
           vm.namespaces = resp.data.data.namespaces

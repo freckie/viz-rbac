@@ -1,7 +1,5 @@
 <template>
   <div>
-    <img alt="Vue logo" src="@/assets/logo.png" />
-
     <h1>{{ msg }}</h1>
 
     <v-divider></v-divider>
@@ -36,7 +34,7 @@
 
 <script>
 export default {
-  name: 'Home',
+  name: 'Setting',
   props: {
     msg: String
   },
