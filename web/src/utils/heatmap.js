@@ -98,7 +98,7 @@ const createHeatmap = (wrapperId,
           .attr('class', 'cell')
           .attr('x', (d, i) => cellStartingPoint + i * cellSize + 1*interCellMargin)
           .attr('y', yValue)
-          .attr('data-verbs', d => d == undefined ? JSON.stringify([]) : JSON.stringify(d))
+          .attr('data-verbs', d => d == undefined ? JSON.stringify(null) : JSON.stringify(d))
           .attr('data-xlabel', (d, i) => xlabels[i])
           .attr('data-ylabel', ylabels[j])
           .attr('width', cellSize - 1*interCellMargin)

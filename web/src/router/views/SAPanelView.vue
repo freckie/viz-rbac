@@ -44,7 +44,7 @@ export default {
   },
   watch: {
     namespace(newVal) {
-      this.$refs.heatmap.generateHeatmap('sa-res', newVal)
+      this.$refs.heatmap.generateHeatmap('sa-res', newVal, this._calcColor)
     }
   },
   mounted() {
@@ -69,6 +69,22 @@ export default {
           console.log('[ERROR]', error)
           alert('Unexpected error.')
         })
+    },
+    _calcColor(verbs) {
+      const colorList = ['#27641907', '#27641954', '#276419a8', '#276419'] // rgb(39, 100, 25)
+
+      if (verbs == undefined || verbs.length == 0) return colorList[0]
+
+      let verbsSet = new Set(verbs)
+      if (verbsSet.has("delete") || verbsSet.has("deletecollection")) {
+        return colorList[3]
+      } else if (verbsSet.has("update") || verbsSet.has("create") || verbsSet.has("patch")) {
+        return colorList[2]
+      } else if (verbsSet.has("get") || verbsSet.has("list") || verbsSet.has("watch")) {
+        return colorList[1]
+      } else {
+        return colorList[0]
+      }
     }
   }
 }

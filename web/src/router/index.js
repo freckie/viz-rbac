@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import SettingView from '@/router/views/SettingView.vue'
 import SAPanelView from '@/router/views/SAPanelView.vue'
+import UAPanelView from '@/router/views/UAPanelView.vue'
 
 Vue.use(VueRouter)
 
@@ -24,7 +25,7 @@ const routes = [
   {
     path: '/ua',
     name: 'UserAccount Panel',
-    component: SAPanelView
+    component: UAPanelView
   },
   {
     path: '/csr',

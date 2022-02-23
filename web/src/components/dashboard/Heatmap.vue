@@ -18,12 +18,17 @@ export default {
     getData(heatmapKind, namespace) {
       return new Promise((resolve, reject) => {
         const host = this.$host
-        var _ns
+        var _ns, url
 
         clearHeatmap('#d3-wrapper')
 
         // Axios
-        this.$axios.get(host + '/api/agg/v1/heatmap/' + heatmapKind + '/' + namespace)
+        if (heatmapKind == 'user-ns') {
+          url = host + '/api/agg/v1/heatmap/' + heatmapKind
+        } else {
+          url = host + '/api/agg/v1/heatmap/' + heatmapKind + '/' + namespace
+        }
+        this.$axios.get(url)
           .then((resp) => {
             _ns = resp.data.data
 
@@ -43,33 +48,21 @@ export default {
           })
       })
     },
-    generateHeatmap(heatmapKind, namespace) {
+    clear() {
+      clearHeatmap('#d3-wrapper')
+    },
+    generateHeatmap(heatmapKind, namespace, colorFn) {
       this.heatmapKind = heatmapKind
       this.namespace = namespace
 
       this.getData(heatmapKind, namespace)
         .then(data => {
-          createHeatmap('#d3-wrapper', data, this._calcColor, this._breakString)    
+          createHeatmap('#d3-wrapper', data, colorFn, this._breakString)    
         })
         .catch((error) => {
           console.log('[ERROR]', error)
           alert('Unexpected error occurred.')
         })
-    },
-        _calcColor(verbs) {
-      // rgb(39, 100, 25)
-      if (verbs == undefined || verbs.length == 0) return '#27641910' // .0
-
-      let verbsSet = new Set(verbs)
-      if (verbsSet.has("delete") || verbsSet.has("deletecollection")) {
-        return '#276419' // 1.00
-      } else if (verbsSet.has("update") || verbsSet.has("create") || verbsSet.has("patch")) {
-        return '#276419a8' // .66
-      } else if (verbsSet.has("get") || verbsSet.has("list") || verbsSet.has("watch")) {
-        return '#27641954' // .33
-      } else {
-        return '#27641907' // .07
-      }
     },
     _breakString(str) {
       const limit = 7
