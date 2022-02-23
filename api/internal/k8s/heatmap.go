@@ -131,3 +131,66 @@ func (c *K8SClient) GetHeatmapUserNSData() (map[string]map[string]int, error) {
 
 	return result, nil
 }
+
+func (c *K8SClient) GetHeatmapUserResData(namespace string) (map[string]RoleRules, error) {
+	cs := c.clientset
+	result := make(map[string]RoleRules)
+
+	// Iterate all RoleBindings
+	rbList, err := cs.RbacV1().RoleBindings(namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return result, err
+	}
+	for _, rb := range rbList.Items {
+		if len(rb.Subjects) == 0 {
+			continue
+		}
+		if rb.Subjects[0].Kind != "User" {
+			continue
+		}
+
+		user := rb.Subjects[0].Name
+		if result[user] == nil {
+			result[user] = make(RoleRules)
+		}
+
+		role, _ := c.GetRole(namespace, rb.RoleRef.Name)
+		for res, verbs := range role {
+			if result[user][res] == nil {
+				result[user][res] = verbs
+			} else {
+				result[user][res] = utils.ConcatString(result[user][res], verbs)
+			}
+		}
+	}
+
+	// Iterate all ClusterRoleBindings
+	crbList, err := cs.RbacV1().ClusterRoleBindings().List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return result, err
+	}
+	for _, crb := range crbList.Items {
+		if len(crb.Subjects) == 0 {
+			continue
+		}
+		if crb.Subjects[0].Kind != "User" {
+			continue
+		}
+
+		user := crb.Subjects[0].Name
+		if result[user] == nil {
+			result[user] = make(RoleRules)
+		}
+
+		role, _ := c.GetClusterRole(crb.RoleRef.Name)
+		for res, verbs := range role {
+			if result[user][res] == nil {
+				result[user][res] = verbs
+			} else {
+				result[user][res] = utils.ConcatString(result[user][res], verbs)
+			}
+		}
+	}
+
+	return result, nil
+}

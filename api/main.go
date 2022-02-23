@@ -35,6 +35,7 @@ func main() {
 	// Aggregated endpoints for visualization
 	router.GET("/api/agg/v1/heatmap/sa-res/:namespace", ep.GetHeatmapSARes)
 	router.GET("/api/agg/v1/heatmap/user-ns", ep.GetHeatmapUserNS)
+	router.GET("/api/agg/v1/heatmap/user-res/:namespace", ep.GetHeatmapUserRes)
 
 	// Serve
 	handler := cors.AllowAll().Handler(router)

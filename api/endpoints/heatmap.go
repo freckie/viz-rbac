@@ -46,3 +46,26 @@ func (e *Endpoints) GetHeatmapUserNS(w http.ResponseWriter, r *http.Request, ps 
 	ihttp.ResponseOK(w, "success", resp)
 	return
 }
+
+// GetHeatmapUserRes returns json data for User-Res Heatmap
+// GET /api/agg/v1/heatmap/user-res/{namespace}
+func (e *Endpoints) GetHeatmapUserRes(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	c := e.Client
+
+	// Parse parameters
+	namespace := ps.ByName("namespace")
+	if namespace == "" {
+		ihttp.ResponseError(w, 404, "Namespace not found.")
+		return
+	}
+
+	resp, err := c.GetHeatmapUserResData(namespace)
+	if err != nil {
+		ihttp.ResponseError(w, 500, err.Error())
+		return
+	}
+
+	// Make response
+	ihttp.ResponseOK(w, "success", resp)
+	return
+}
