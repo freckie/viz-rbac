@@ -30,3 +30,19 @@ func (e *Endpoints) GetHeatmapSARes(w http.ResponseWriter, r *http.Request, ps h
 	ihttp.ResponseOK(w, "success", resp)
 	return
 }
+
+// GetHeatmapUserNS returns json data for User-NS Heatmap
+// GET /api/agg/v1/heatmap/user-ns
+func (e *Endpoints) GetHeatmapUserNS(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	c := e.Client
+
+	resp, err := c.GetHeatmapUserNSData()
+	if err != nil {
+		ihttp.ResponseError(w, 500, err.Error())
+		return
+	}
+
+	// Make response
+	ihttp.ResponseOK(w, "success", resp)
+	return
+}
