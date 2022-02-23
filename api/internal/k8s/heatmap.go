@@ -28,7 +28,10 @@ func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules,
 		return result, err
 	}
 	for _, rb := range rbList.Items {
-		if (len(rb.Subjects) == 0) || (rb.Subjects[0].Kind != "ServiceAccount") {
+		if len(rb.Subjects) == 0 {
+			continue
+		}
+		if rb.Subjects[0].Kind != "ServiceAccount" {
 			continue
 		}
 
@@ -53,7 +56,10 @@ func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules,
 		return result, err
 	}
 	for _, crb := range crbList.Items {
-		if (len(crb.Subjects) == 0) || (crb.Subjects[0].Kind != "ServiceAccount") {
+		if len(crb.Subjects) == 0 {
+			continue
+		}
+		if crb.Subjects[0].Kind != "ServiceAccount" {
 			continue
 		}
 
