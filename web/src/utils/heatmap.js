@@ -1,5 +1,12 @@
 import * as d3 from 'd3'
 
+const _getScrollPos = (wrapperId) => {
+  const wid = wrapperId.replace('#', '')
+  const top = document.documentElement.scrollTop
+  const left = document.getElementById(wid).scrollLeft
+  return { left, top }
+}
+
 const clearHeatmap = (wrapperId) => {
   d3.select(wrapperId).selectAll('svg').remove()
   d3.select(wrapperId).select('.tooltip').remove()
@@ -54,9 +61,10 @@ const createHeatmap = (wrapperId,
 
     const tooltipMouseMove = (event) => {
       let pointer = d3.pointer(event)
+      var scrollPos = _getScrollPos(wrapperId)
       tooltip.html(tooltipContent(event.target.attributes))
-        .style('left', (pointer[0] + 318) + 'px')
-        .style('top', (pointer[1] + 90) + 'px')
+        .style('left', (pointer[0] + 318 - scrollPos['left']) + 'px')
+        .style('top', (pointer[1] + 90 - scrollPos['top']) + 'px')
     }
 
     const tooltipMouseLeave = (event) => {
