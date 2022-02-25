@@ -41,6 +41,9 @@ rules:
 - apiGroups: ["rbac.authorization.k8s.io"]
   resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
   verbs: ["get", "watch", "list"]
+- apiGroups: ["certificates.k8s.io"]
+  resources: ["certificatesigningrequests"]
+  verbs: ["get", "watch", "list", "create", "delete"]
 
 ---
 # role-binding.yaml
