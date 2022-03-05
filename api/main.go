@@ -31,6 +31,7 @@ func main() {
 	router.GET("/api/res/v1/namespaces/:namespace/service-accounts/:sa/roles", ep.GetRolesByServiceAccount)
 	router.GET("/api/res/v1/namespaces/:namespace/roles/:role", ep.GetRole)
 	router.GET("/api/res/v1/namespaces/:namespace/cluster-roles/:crole", ep.GetClusterRole)
+	router.GET("/api/res/v1/csrs", ep.GetCSRs)
 
 	// Aggregated endpoints for visualization
 	router.GET("/api/agg/v1/heatmap/sa-res/:namespace", ep.GetHeatmapSARes)
