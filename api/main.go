@@ -32,6 +32,7 @@ func main() {
 	router.GET("/api/res/v1/namespaces/:namespace/roles/:role", ep.GetRole)
 	router.GET("/api/res/v1/namespaces/:namespace/cluster-roles/:crole", ep.GetClusterRole)
 	router.GET("/api/res/v1/csrs", ep.GetCSRs)
+	router.PATCH("/api/res/v1/csrs/:csr", ep.PatchCSRApproval)
 
 	// Aggregated endpoints for visualization
 	router.GET("/api/agg/v1/heatmap/sa-res/:namespace", ep.GetHeatmapSARes)
