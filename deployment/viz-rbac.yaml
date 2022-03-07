@@ -42,8 +42,12 @@ rules:
   resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
   verbs: ["get", "watch", "list"]
 - apiGroups: ["certificates.k8s.io"]
-  resources: ["certificatesigningrequests"]
-  verbs: ["get", "watch", "list", "create", "delete"]
+  resources: ["certificatesigningrequests", "certificatesigningrequests/approval", "certificatesigningrequests/status"]
+  verbs: ["*"]
+- apiGroups: ["certificates.k8s.io"]
+  resources: ["signers"]
+  resourceNames: ["kubernetes.io/kube-apiserver-client"] # Change domain name & signer
+  verbs: ["*"]
 
 ---
 # role-binding.yaml
