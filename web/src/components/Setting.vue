@@ -1,11 +1,12 @@
 <template>
   <div>
-    <h1>{{ msg }}</h1>
+    <div class="text-h3 text-center" v-text="msg"></div>
 
-    <v-divider></v-divider>
+    <v-divider class="setting-divider"></v-divider>
 
-    <div id="setting">
-      <h3>API Setting</h3>
+    <!-- API Setting -->
+    <div class="setting-subpanel">
+      <div class="text-h5">API Setting</div>
       <v-row>
         
         <v-col cols="6">
@@ -14,7 +15,7 @@
             append-outer-icon="mdi-check"
             clear-icon="mdi-close-circle"
             clearable
-            label="API URL"
+            label="Backend API URL"
             type="text"
             hint="e.g. http://example.com:30000"
             @click:append-outer="setApiUrl"
@@ -28,6 +29,18 @@
       >
         Test for API connection :: {{ testResult.msg }}
       </v-badge>
+    </div>
+
+    <!-- viz-rbac Information -->
+    <div class="setting-subpanel">
+      <div class="text-h5">Information (WIP)</div>
+      <div
+        v-for="version in information.versions"
+        :key="version[0]"
+        class="text-subtitle-1 information-item"
+      >
+        {{ version[0] }} Version : {{ version[1] }}
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +57,13 @@ export default {
       testResult: {
         msg: 'Waiting',
         color: '#ffff66'
+      },
+      information: {
+        versions: [
+          ['viz-rbac-web', '0.0.1'],
+          ['viz-rbac-api', '0.0.1'],
+          ['Kubernetes', '0.0.1']
+        ]
       }
     }
   },
@@ -83,8 +103,14 @@ export default {
 }
 </script>
 
-<style scoped>
-a {
-  color: #42b983;
+<style lang="scss" scoped>
+.setting-divider {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.setting-subpanel {
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
 }
 </style>
