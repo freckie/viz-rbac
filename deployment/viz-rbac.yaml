@@ -13,21 +13,6 @@ metadata:
   namespace: viz-rbac
 
 ---
-# role.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: api-role
-  namespace: viz-rbac
-rules:
-- apiGroups: [""]
-  resources: ["pods", "serviceaccounts"]
-  verbs: ["get", "watch", "list"]
-- apiGroups: ["rbac.authorization.k8s.io"]
-  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
-  verbs: ["get", "watch", "list"]
-
----
 # cluster-role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -48,22 +33,6 @@ rules:
   resources: ["signers"]
   resourceNames: ["kubernetes.io/kube-apiserver-client"] # Change domain name & signer
   verbs: ["*"]
-
----
-# role-binding.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: api-rolebinding
-  namespace: viz-rbac
-subjects:
-- kind: ServiceAccount
-  name: api-sa
-  namespace: viz-rbac
-roleRef:
-  kind: Role
-  name: api-role
-  apiGroup: rbac.authorization.k8s.io
 
 ---
 # crole-binding.yaml
