@@ -1,5 +1,8 @@
 <template>
-  <Setting msg="Welcome to viz-rbac Dashboard !" />
+  <Setting
+    id="setting"
+    msg="Welcome to viz-rbac Dashboard !"
+  />
 </template>
 
 <script>
@@ -12,3 +15,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+#setting {
+  width: 90%;
+  margin: 50px auto;
+}
+</style>

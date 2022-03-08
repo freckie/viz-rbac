@@ -60,9 +60,9 @@ export default {
       },
       information: {
         versions: [
-          ['viz-rbac-web', '0.0.1'],
-          ['viz-rbac-api', '0.0.1'],
-          ['Kubernetes', '0.0.1']
+          ['viz-rbac-web', 'unknown'],
+          ['viz-rbac-api', 'unknown'],
+          ['Kubernetes', 'unknown']
         ]
       }
     }

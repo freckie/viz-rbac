@@ -61,7 +61,7 @@ export default {
           link: '/ua'
         },
         {
-          title: 'CSR Panel',
+          title: 'Certification Signing Panel',
           icon: 'mdi-certificate-outline',
           link: '/csr'
         },

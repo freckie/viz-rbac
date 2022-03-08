@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import SettingView from '@/router/views/SettingView.vue'
 import SAPanelView from '@/router/views/SAPanelView.vue'
 import UAPanelView from '@/router/views/UAPanelView.vue'
+import CSRPanelView from '@/router/views/CSRPanelView.vue'
 
 Vue.use(VueRouter)
 
@@ -29,8 +30,8 @@ const routes = [
   },
   {
     path: '/csr',
-    name: 'CSR Panel',
-    component: SAPanelView
+    name: 'CertificateSigningRequest Panel',
+    component: CSRPanelView
   }
 ]
 
