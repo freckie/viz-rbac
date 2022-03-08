@@ -61,17 +61,24 @@
     </v-toolbar>
 
     <div id="heatmap-wrapper">
+      <Info
+        title="The target namespace is not selected."
+        ref="info"
+        :show-on-mounted="false"
+      />
       <Heatmap ref="heatmap" />
     </div>
   </div>
 </template>
 
 <script>
+import Info from '@/components/Info.vue'
 import Heatmap from '@/components/dashboard/Heatmap.vue'
 
 export default {
   name: 'UAPanelView',
   components: {
+    Info,
     Heatmap
   },
   data: () => {
@@ -84,15 +91,24 @@ export default {
   watch: {
     zoomLevel(newLevel) {
       if (newLevel == 0) {
-        console.log('Changed ZoomLevel successfully :', newLevel)
+        this.$refs.info.hide()
         this.generateUserNSHeatmap()
+        this.namespace = ''
       } else if (newLevel == 1) {
-        console.log('Changed ZoomLevel successfully :', newLevel)
+        this.$refs.info.show()
         this.setNamespaces()
+        this.namespace = ''
       }
     },
     namespace(newNS) {
-      this.$refs.heatmap.generateHeatmap('user-res', newNS, this._calcColorForUserRes)
+      if (this.zoomLevel == 1) {
+        if (this.namespace == undefined || this.namespace == null || this.namespace == '') {
+          this.$refs.info.show()
+        } else {
+          this.$refs.info.hide()
+          this.$refs.heatmap.generateHeatmap('user-res', newNS, this._calcColorForUserRes)
+        }
+      }
     }
   },
   mounted() {

@@ -7,9 +7,7 @@
       dense
       height="48"
     >
-      <v-col
-        cols="6"
-      >
+      <v-col cols="6">
         <v-select
           v-model="namespace"
           :items="namespaces"
@@ -23,17 +21,24 @@
     </v-toolbar>
 
     <div id="heatmap-wrapper">
+      <Info
+        title="The target namespace is not selected."
+        ref="info"
+        show-on-mounted
+      />
       <Heatmap ref="heatmap" />
     </div>
   </div>
 </template>
 
 <script>
+import Info from '@/components/Info.vue'
 import Heatmap from '@/components/dashboard/Heatmap.vue'
 
 export default {
   name: 'SAPanelView',
   components: {
+    Info,
     Heatmap
   },
   data: () => {
@@ -44,6 +49,11 @@ export default {
   },
   watch: {
     namespace(newVal) {
+      if (newVal == undefined || newVal == null || newVal == '') {
+        this.$refs.info.show()
+      } else {
+        this.$refs.info.hide()
+      }
       this.$refs.heatmap.generateHeatmap('sa-res', newVal, this._calcColor)
     }
   },

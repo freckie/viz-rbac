@@ -1,13 +1,23 @@
 <template>
   <div id="d3-wrapper">
+    <Info
+      title="Generating Heatmap ..."
+      ref="info"
+      circular
+      :show-on-mounted="false"
+    />
   </div>
 </template>
 
 <script>
-import { clearHeatmap, createHeatmap } from "@/api/heatmap"
+import { clearHeatmap, createHeatmap } from '@/api/heatmap'
+import Info from '@/components/Info.vue'
 
 export default {
   name: 'Heatmap',
+  components: {
+    Info
+  },
   data: () => {
     return {
       namespace: '',
@@ -52,6 +62,9 @@ export default {
       clearHeatmap('#d3-wrapper')
     },
     generateHeatmap(heatmapKind, namespace, colorFn) {
+      const vm = this
+      vm.$refs.info.show()
+
       this.heatmapKind = heatmapKind
       this.namespace = namespace
 
@@ -62,6 +75,9 @@ export default {
         .catch((error) => {
           console.log('[ERROR]', error)
           alert('Unexpected error occurred.')
+        })
+        .finally(() => {
+          vm.$refs.info.hide()
         })
     },
     _breakString(str) {
