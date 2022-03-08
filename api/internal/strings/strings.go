@@ -1,6 +1,6 @@
-package utils
+package strings
 
-func ContainsString(slice []string, target string) bool {
+func Contains(slice []string, target string) bool {
 	for idx := range slice {
 		if target == slice[idx] {
 			return true
@@ -9,7 +9,7 @@ func ContainsString(slice []string, target string) bool {
 	return false
 }
 
-func ConcatString(left, right []string) []string {
+func Concat(left, right []string) []string {
 	temp := make(map[string]bool)
 	result := make([]string, 0)
 	for _, it := range left {

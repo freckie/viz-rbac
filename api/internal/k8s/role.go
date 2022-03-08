@@ -3,7 +3,7 @@ package k8s
 import (
 	"context"
 
-	iutils "github.com/freckie/viz-rbac/internal/utils"
+	istrings "github.com/freckie/viz-rbac/internal/strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -118,7 +118,7 @@ func (c *K8SClient) GetRole(namespace, roleName string) (RoleRules, error) {
 
 	for _, rule := range role.Rules {
 		for _, res := range rule.Resources {
-			if iutils.ContainsString(rule.Verbs, "*") {
+			if istrings.Contains(rule.Verbs, "*") {
 				result[res] = wildcardVerbs
 			} else {
 				result[res] = rule.Verbs
@@ -141,7 +141,7 @@ func (c *K8SClient) GetClusterRole(croleName string) (RoleRules, error) {
 
 	for _, rule := range crole.Rules {
 		for _, res := range rule.Resources {
-			if iutils.ContainsString(rule.Verbs, "*") {
+			if istrings.Contains(rule.Verbs, "*") {
 				result[res] = wildcardVerbs
 			} else {
 				result[res] = rule.Verbs

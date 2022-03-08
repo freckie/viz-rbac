@@ -5,7 +5,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/freckie/viz-rbac/internal/utils"
+	istrings "github.com/freckie/viz-rbac/internal/strings"
 )
 
 func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules, error) {
@@ -37,7 +37,7 @@ func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules,
 		}
 
 		saName := rb.Subjects[0].Name
-		if !(utils.ContainsString(saNames, saName)) {
+		if !(istrings.Contains(saNames, saName)) {
 			continue
 		}
 
@@ -46,7 +46,7 @@ func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules,
 			if result[saName][res] == nil {
 				result[saName][res] = verbs
 			} else {
-				result[saName][res] = utils.ConcatString(result[saName][res], verbs)
+				result[saName][res] = istrings.Concat(result[saName][res], verbs)
 			}
 		}
 	}
@@ -65,7 +65,7 @@ func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules,
 		}
 
 		saName := crb.Subjects[0].Name
-		if !(utils.ContainsString(saNames, saName)) {
+		if !(istrings.Contains(saNames, saName)) {
 			continue
 		}
 		if result[saName] == nil {
@@ -77,7 +77,7 @@ func (c *K8SClient) GetHeatmapSAResData(namespace string) (map[string]RoleRules,
 			if result[saName][res] == nil {
 				result[saName][res] = verbs
 			} else {
-				result[saName][res] = utils.ConcatString(result[saName][res], verbs)
+				result[saName][res] = istrings.Concat(result[saName][res], verbs)
 			}
 		}
 	}
@@ -159,7 +159,7 @@ func (c *K8SClient) GetHeatmapUserResData(namespace string) (map[string]RoleRule
 			if result[user][res] == nil {
 				result[user][res] = verbs
 			} else {
-				result[user][res] = utils.ConcatString(result[user][res], verbs)
+				result[user][res] = istrings.Concat(result[user][res], verbs)
 			}
 		}
 	}
@@ -187,7 +187,7 @@ func (c *K8SClient) GetHeatmapUserResData(namespace string) (map[string]RoleRule
 			if result[user][res] == nil {
 				result[user][res] = verbs
 			} else {
-				result[user][res] = utils.ConcatString(result[user][res], verbs)
+				result[user][res] = istrings.Concat(result[user][res], verbs)
 			}
 		}
 	}
