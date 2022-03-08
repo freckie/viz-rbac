@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { clearHeatmap, createHeatmap } from "@/utils/heatmap"
+import { clearHeatmap, createHeatmap } from "@/api/heatmap"
 
 export default {
   name: 'Heatmap',
