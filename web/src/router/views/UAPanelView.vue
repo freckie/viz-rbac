@@ -123,6 +123,12 @@ export default {
       else this.zoomLevel--
     },
     generateUserNSHeatmap() {
+      const host = this.$host
+      if (host == undefined || host == null || host == '') {
+        alert('API Host is not set yet.')
+        this.$router.push('/setting')
+        return
+      }
       this.$refs.heatmap.generateHeatmap('user-ns', '', this._calcColorForUserNS)
     },
     setNamespaces() {
