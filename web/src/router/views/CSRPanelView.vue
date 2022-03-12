@@ -9,6 +9,20 @@ export default {
   name: 'CSRPanelView',
   components: {
     CSRPanel
+  },
+  mounted() {
+    this.checkAPIConnection()
+  },
+  methods: {
+    checkAPIConnection() {
+      const host = this.$host
+
+      if (host == undefined || host == null || host == '') {
+        alert('API Host is not set yet.')
+        this.$router.push('/setting')
+        return
+      }
+    }
   }
 }
 </script>
