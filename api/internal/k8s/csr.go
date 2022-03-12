@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"time"
 
 	certv1 "k8s.io/api/certificates/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -13,6 +14,7 @@ type CSRResult struct {
 	SignerName string `json:"signer_name"`
 	Status     string `json:"status"`
 	Username   string `json:"username"`
+	CreatedAt  string `json:"created_at"`
 }
 
 func (c *K8SClient) GetCSRs() ([]CSRResult, error) {
@@ -38,6 +40,7 @@ func (c *K8SClient) GetCSRs() ([]CSRResult, error) {
 			SignerName: csr.Spec.SignerName,
 			Status:     status,
 			Username:   csr.Spec.Username,
+			CreatedAt:  csr.CreationTimestamp.Format(time.UnixDate),
 		})
 	}
 
