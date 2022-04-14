@@ -1,21 +1,66 @@
 import { Renderer } from "@k8slens/extensions";
-import { VizRBACIcon, VizRBACPage } from "./src/service-account-page";
+import { ServiceAccountPage } from "./src/service-account-page";
+import { UserAccountPage } from "./src/user-account-page";
+import { SettingPage } from "./src/setting-page";
+
 import React from "react";
+
+export function VizRBACIcon(props: Renderer.Component.IconProps) {
+  return (
+    <Renderer.Component.Icon {...props} material="pages" tooltip={"VIZ_RBAC"} />
+  );
+}
 
 export default class VizRBACExtension extends Renderer.LensExtension {
   clusterPages = [
     {
-      id: "viz-rbac", // hello-world:foo
+      id: "service-account",
       components: {
-        Page: () => <VizRBACPage extension={this} />,
+        Page: () => <ServiceAccountPage extension={this} />,
+      },
+    },
+    {
+      id: "user-account",
+      components: {
+        Page: () => <UserAccountPage extension={this} />,
+      },
+    },
+    {
+      id: "settings",
+      components: {
+        Page: () => <SettingPage extension={this} />,
       },
     },
   ];
 
   clusterPageMenus = [
     {
-      target: { pageId: "viz-rbac" },
+      id: "viz-rbac",
       title: "viz-rbac",
+      components: {
+        Icon: VizRBACIcon,
+      },
+    },
+    {
+      parentId: "viz-rbac",
+      target: { pageId: "service-account" },
+      title: "[viz] Service Account",
+      components: {
+        Icon: VizRBACIcon,
+      },
+    },
+    {
+      parentId: "viz-rbac",
+      target: { pageId: "user-account" },
+      title: "[viz] User Account",
+      components: {
+        Icon: VizRBACIcon,
+      },
+    },
+    {
+      parentId: "viz-rbac",
+      target: { pageId: "settings" },
+      title: "[viz] Settings",
       components: {
         Icon: VizRBACIcon,
       },

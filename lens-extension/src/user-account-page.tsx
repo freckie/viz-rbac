@@ -3,7 +3,7 @@ import { CoffeeDoodle } from "react-open-doodles";
 import path from "path";
 import React from "react";
 
-export class ServiceAccountPage extends React.Component<{
+export class UserAccountPage extends React.Component<{
   extension: Renderer.LensExtension;
 }> {
   render() {
@@ -15,7 +15,7 @@ export class ServiceAccountPage extends React.Component<{
         <div style={doodleStyle}>
           <CoffeeDoodle accent="#3d90ce" />
         </div>
-        <p>service account page</p>
+        <p>user account page</p>
       </div>
     );
   }
