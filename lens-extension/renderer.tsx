@@ -2,7 +2,7 @@ import { Renderer } from "@k8slens/extensions";
 import { ServiceAccountPage } from "./src/service-account-page";
 import { UserAccountPage } from "./src/user-account-page";
 import { SettingPage } from "./src/setting-page";
-
+import { SettingStore } from "./src/setting-store";
 import React from "react";
 
 export function VizRBACIcon(props: Renderer.Component.IconProps) {
@@ -12,6 +12,11 @@ export function VizRBACIcon(props: Renderer.Component.IconProps) {
 }
 
 export default class VizRBACExtension extends Renderer.LensExtension {
+  async onActivate() {
+    await SettingStore.getInstanceOrCreate().loadExtension(this);
+    console.log("viz-rbac");
+  }
+
   clusterPages = [
     {
       id: "service-account",
@@ -66,8 +71,4 @@ export default class VizRBACExtension extends Renderer.LensExtension {
       },
     },
   ];
-
-  async onActivate() {
-    console.log("viz-rbac");
-  }
 }
