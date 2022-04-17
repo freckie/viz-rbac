@@ -1,5 +1,5 @@
 import { Main } from "@k8slens/extensions";
-import { SettingStore } from "./src/setting-store";
+import { SettingStore } from "./src/components/+viz-rbac-settings/settings-store";
 
 export default class VizRBACMainExtension extends Main.LensExtension {
   async onActivate() {

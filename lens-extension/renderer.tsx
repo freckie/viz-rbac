@@ -1,8 +1,8 @@
 import { Renderer } from "@k8slens/extensions";
-import { ServiceAccountPage } from "./src/service-account-page";
-import { UserAccountPage } from "./src/user-account-page";
-import { SettingPage } from "./src/setting-page";
-import { SettingStore } from "./src/setting-store";
+import { ServiceAccountPage } from "./src/components/+viz-rbac-service-account/service-account";
+import { UserAccountPage } from "./src/components/+viz-rbac-user-account/user-account";
+import { SettingPage } from "./src/components/+viz-rbac-settings/settings";
+import { SettingStore } from "./src/components/+viz-rbac-settings/settings-store";
 import React from "react";
 
 export function VizRBACIcon(props: Renderer.Component.IconProps) {

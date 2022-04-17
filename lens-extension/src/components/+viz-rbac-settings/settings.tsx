@@ -1,5 +1,5 @@
 import { Renderer } from "@k8slens/extensions";
-import { SettingStore } from "./setting-store";
+import { SettingStore } from "./settings-store";
 import { CoffeeDoodle } from "react-open-doodles";
 import path from "path";
 import React from "react";
