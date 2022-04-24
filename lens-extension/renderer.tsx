@@ -4,6 +4,7 @@ import { UserAccountPage } from "./src/components/+viz-rbac-user-account/user-ac
 import { SettingPage } from "./src/components/+viz-rbac-settings/settings";
 import { SettingStore } from "./src/components/+viz-rbac-settings/settings-store";
 import React from "react";
+import { MyNamespaceStore } from "./src/components/+viz-rbac-service-account/my-namespace-store";
 
 export function VizRBACIcon(props: Renderer.Component.IconProps) {
   return (
@@ -13,7 +14,8 @@ export function VizRBACIcon(props: Renderer.Component.IconProps) {
 
 export default class VizRBACExtension extends Renderer.LensExtension {
   async onActivate() {
-    await SettingStore.getInstanceOrCreate().loadExtension(this);
+    SettingStore.getInstanceOrCreate().loadExtension(this);
+    MyNamespaceStore.getInstanceOrCreate().loadExtension(this);
     console.log("viz-rbac");
   }
 

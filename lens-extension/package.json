@@ -31,11 +31,13 @@
   "dependencies": {
     "mobx": "^6.5.0",
     "mobx-react": "^7.3.0",
+    "node-fetch": "lensapp/node-fetch#2.x",
     "react-open-doodles": "^1.0.5"
   },
   "devDependencies": {
     "@k8slens/extensions": "^5.0.0",
     "@types/node": "^12.0.0",
+    "@types/node-fetch": "^2.6.1",
     "@types/react": "^16.9.35",
     "ts-loader": "^8.0.4",
     "typescript": "^4.0.3",
