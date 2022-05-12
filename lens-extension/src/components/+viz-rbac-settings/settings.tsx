@@ -1,5 +1,5 @@
 import { Renderer } from "@k8slens/extensions";
-import { SettingStore } from "./settings-store";
+import { MyNamespaceStore } from "./../my-namespace-store";
 import { CoffeeDoodle } from "react-open-doodles";
 import path from "path";
 import React from "react";
@@ -12,6 +12,11 @@ import { observer } from "mobx-react";
 export class SettingPage extends React.Component<{
   extension: Renderer.LensExtension;
 }> {
+  async componentWillUnmount() {
+    // api 주소 입력이 바뀔때마다 자동으로 load되게하면 불필요한 호출 증가
+    // setting 페이지 밖으로 나갈때 namespace를 불러온다.
+    await MyNamespaceStore.getInstanceOrCreate().loadMyNamespaces();
+  }
   render() {
     const doodleStyle = {
       width: "200px",
@@ -24,9 +29,9 @@ export class SettingPage extends React.Component<{
         <p>setting page</p>
         <div style={{ display: "flex" }}>
           <input
-            value={SettingStore.getInstance().apiAddress}
+            value={MyNamespaceStore.getInstance().apiAddress}
             onChange={(v) => {
-              SettingStore.getInstance().apiAddress = v.target.value;
+              MyNamespaceStore.getInstance().apiAddress = v.target.value;
             }}
           />
         </div>
