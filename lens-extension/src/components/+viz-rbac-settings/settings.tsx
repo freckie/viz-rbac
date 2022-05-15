@@ -4,23 +4,23 @@ import { CoffeeDoodle } from "react-open-doodles";
 import path from "path";
 import React from "react";
 import { observer } from "mobx-react";
-
-// store 는 lens가 재시작 되면 default로 초기화
-// However, in the example, the enabled state is not stored anywhere, and it reverts to the default when Lens is restarted.
+import { reaction, observable } from "mobx";
 
 @observer
 export class SettingPage extends React.Component<{
   extension: Renderer.LensExtension;
 }> {
-  async componentWillUnmount() {
-    // api 주소 입력이 바뀔때마다 자동으로 load되게하면 불필요한 호출 증가
-    // setting 페이지 밖으로 나갈때 namespace를 불러온다.
-    await MyNamespaceStore.getInstanceOrCreate().loadMyNamespaces();
-  }
+  // observable apiAddr = "" 로 했을때 Input value 변경 안되는 issue 해결 못함
+  // 추후 시간 여유 있을때 해결해보기. 일단은 state로 대체
+  state = {
+    apiAddr: MyNamespaceStore.getInstanceOrCreate().apiAddress,
+  };
   render() {
+    const mynamespaceStore = MyNamespaceStore.getInstanceOrCreate();
     const doodleStyle = {
       width: "200px",
     };
+
     return (
       <div className="flex column gaps align-flex-start">
         <div style={doodleStyle}>
@@ -28,12 +28,22 @@ export class SettingPage extends React.Component<{
         </div>
         <p>setting page</p>
         <div style={{ display: "flex" }}>
-          <input
-            value={MyNamespaceStore.getInstance().apiAddress}
+          <Renderer.Component.Input
+            value={this.state.apiAddr}
             onChange={(v) => {
-              MyNamespaceStore.getInstance().apiAddress = v.target.value;
+              this.setState({
+                apiAddr: v,
+              });
             }}
           />
+          <button
+            onClick={() => {
+              mynamespaceStore.apiAddress = this.state.apiAddr;
+              mynamespaceStore.loadMyNamespaces();
+            }}
+          >
+            저장
+          </button>
         </div>
       </div>
     );
