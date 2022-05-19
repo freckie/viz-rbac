@@ -29,6 +29,8 @@
     "clean": "rm -rf ./dist"
   },
   "dependencies": {
+    "@types/d3": "^7.1.0",
+    "d3": "^7.4.4",
     "mobx": "^6.5.0",
     "mobx-react": "^7.3.0",
     "node-fetch": "lensapp/node-fetch#2.x",

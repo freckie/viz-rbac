@@ -53,8 +53,8 @@ export class MyNamespaceStore extends Common.Store
         data = text;
         this.namespaces = [];
         this.namespacesCount = 0;
-        this.apiAddress = "";
         this.addressValidity = false;
+        this.apiAddress = "";
         this.selectedNamespace = "";
       } finally {
         this.namespaces = data.data.namespaces;
