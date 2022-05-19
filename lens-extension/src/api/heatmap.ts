@@ -28,7 +28,8 @@ const createHeatmap = (
   wrapperId: string,
   { xlabels, ylabels, data }: HeatmapProps,
   calcColorFn: (vervs: any) => string,
-  breakStringFn: (str: string) => string
+  breakStringFn: (str: string) => string,
+  theme: string
 ) => {
   // Const variables
   const cellSize = 21;
@@ -117,6 +118,7 @@ const createHeatmap = (
       .attr("y", yValue + labelFontsize)
       .attr("font-weight", "400")
       .attr("font-size", labelFontsize)
+      .attr("fill", theme === "light" ? "#555555" : "#8e9297")
       .text(label)
       .enter();
 

@@ -51,6 +51,7 @@ export class ServiceAccountPage extends React.Component<{
               data={sAResourceStore.authArray}
               loading={sAResourceStore.loading}
               addressValidity={mynamespaceStore.addressValidity}
+              theme={Renderer.Theme.getActiveTheme().type}
             />
           </div>
         </div>

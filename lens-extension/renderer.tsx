@@ -49,25 +49,28 @@ export default class VizRBACExtension extends Renderer.LensExtension {
       },
     },
     {
+      id: "service-account",
       parentId: "viz-rbac",
       target: { pageId: "service-account" },
-      title: "[viz] Service Account",
+      title: "Service Account",
       components: {
         Icon: VizRBACIcon,
       },
     },
     {
+      id: "user-account",
       parentId: "viz-rbac",
       target: { pageId: "user-account" },
-      title: "[viz] User Account",
+      title: "User Account",
       components: {
         Icon: VizRBACIcon,
       },
     },
     {
+      id: "settings",
       parentId: "viz-rbac",
       target: { pageId: "settings" },
-      title: "[viz] Settings",
+      title: "Settings",
       components: {
         Icon: VizRBACIcon,
       },

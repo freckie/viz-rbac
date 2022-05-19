@@ -9,15 +9,36 @@ type HeatmapProps = {
   data: Array<Array<Array<string>>>;
   loading: boolean;
   addressValidity: boolean;
+  theme: string;
 };
-export const Heatmap = (heatmapData: HeatmapProps) => {
+
+type GenerageHeatmapData = {
+  xlabels: Array<string>;
+  ylabels: Array<string>;
+  data: Array<Array<Array<string>>>;
+};
+export const Heatmap = (heatmapProps: HeatmapProps) => {
   useEffect(() => {
     clear();
-    generateHeatmap(heatmapData);
-  }, [heatmapData]);
+    const generageHeatmapData = {
+      xlabels: heatmapProps.xlabels,
+      ylabels: heatmapProps.ylabels,
+      data: heatmapProps.data,
+    };
+    generateHeatmap(generageHeatmapData, heatmapProps.theme);
+  }, [heatmapProps]);
 
-  const generateHeatmap = (heatmapData: HeatmapProps) => {
-    createHeatmap("#d3-wrapper", heatmapData, _calcColor, _breakString);
+  const generateHeatmap = (
+    generageHeatmapData: GenerageHeatmapData,
+    theme: string
+  ) => {
+    createHeatmap(
+      "#d3-wrapper",
+      generageHeatmapData,
+      _calcColor,
+      _breakString,
+      theme
+    );
   };
   const clear = () => {
     clearHeatmap("#d3-wrapper");
@@ -31,7 +52,8 @@ export const Heatmap = (heatmapData: HeatmapProps) => {
   };
 
   const _calcColor = (verbs: any) => {
-    const colorList = ["#27641907", "#27641954", "#276419a8", "#276419"]; // rgb(39, 100, 25)
+    const notingColor = heatmapProps.theme === "light" ? "#f1f1f1" : "#1e2124";
+    const colorList = [notingColor, "#27641954", "#276419a8", "#276419"]; // rgb(39, 100, 25)
     if (verbs == undefined || verbs.length == 0) return colorList[0];
     let verbsSet = new Set(verbs);
     if (verbsSet.has("delete") || verbsSet.has("deletecollection")) {
@@ -55,11 +77,11 @@ export const Heatmap = (heatmapData: HeatmapProps) => {
 
   return (
     <>
-      {!heatmapData.addressValidity ? (
+      {!heatmapProps.addressValidity ? (
         <div className="NoItems flex box grow">
           <div className="box center">invalid address</div>
         </div>
-      ) : heatmapData.loading ? (
+      ) : heatmapProps.loading ? (
         <Renderer.Component.Spinner center />
       ) : (
         <div className="VirtualList KubeObjectListLayout box grow">
