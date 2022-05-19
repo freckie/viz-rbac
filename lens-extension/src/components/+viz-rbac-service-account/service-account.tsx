@@ -16,7 +16,7 @@ export class ServiceAccountPage extends React.Component<{
       sAResourceStore.loadServiceAccounts();
     };
     return (
-      <div className="ItemListLayout flex column KubeObjectListLayout ">
+      <div className="ItemListLayout flex column">
         <div className="header flex gaps align-center">
           <h5 className="title">Service Account</h5>
           <div className="info-panel box grow">
@@ -36,7 +36,7 @@ export class ServiceAccountPage extends React.Component<{
             value={mynamespaceStore.selectedNamespace}
           />
         </div>
-        <div className="items box grow flex column">
+        <div className="items grow flex column">
           <Renderer.Component.TableHead sticky nowrap showTopLine>
             <Renderer.Component.TableCell>
               <div className="content">
@@ -44,16 +44,14 @@ export class ServiceAccountPage extends React.Component<{
               </div>
             </Renderer.Component.TableCell>
           </Renderer.Component.TableHead>
-          <div className="Table flex column KubeObjectListLayout box grow scrollable autoSize virtual">
-            <Heatmap
-              xlabels={sAResourceStore.resources}
-              ylabels={sAResourceStore.serviceAccounts}
-              data={sAResourceStore.authArray}
-              loading={sAResourceStore.loading}
-              addressValidity={mynamespaceStore.addressValidity}
-              theme={Renderer.Theme.getActiveTheme().type}
-            />
-          </div>
+          <Heatmap
+            xlabels={sAResourceStore.resources}
+            ylabels={sAResourceStore.serviceAccounts}
+            data={sAResourceStore.authArray}
+            loading={sAResourceStore.loading}
+            addressValidity={mynamespaceStore.addressValidity}
+            theme={Renderer.Theme.getActiveTheme().type}
+          />
         </div>
       </div>
     );

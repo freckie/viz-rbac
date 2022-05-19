@@ -14,7 +14,7 @@ type HeatmapProps = {
 
 const _getScrollPos = (wrapperId: string) => {
   const wid = wrapperId.replace("#", "");
-  const top = document.documentElement.scrollTop;
+  const top = document.getElementById(wid).scrollTop;
   const left = document.getElementById(wid).scrollLeft;
   return { left, top };
 };
@@ -77,8 +77,8 @@ const createHeatmap = (
     var scrollPos = _getScrollPos(wrapperId);
     tooltip
       .html(tooltipContent(event.target.attributes))
-      .style("left", pointer[0] + 318 - scrollPos["left"] + "px")
-      .style("top", pointer[1] + 90 - scrollPos["top"] + "px");
+      .style("left", pointer[0] + 300 - scrollPos["left"] + "px")
+      .style("top", pointer[1] + 140 - scrollPos["top"] + "px");
   };
 
   const tooltipMouseLeave = (event: any) => {

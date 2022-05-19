@@ -78,17 +78,13 @@ export const Heatmap = (heatmapProps: HeatmapProps) => {
   return (
     <>
       {!heatmapProps.addressValidity ? (
-        <div className="NoItems flex box grow">
+        <div className="NoItems flex box">
           <div className="box center">invalid address</div>
         </div>
       ) : heatmapProps.loading ? (
         <Renderer.Component.Spinner center />
       ) : (
-        <div className="VirtualList KubeObjectListLayout box grow">
-          <div className="List">
-            <div id="d3-wrapper" />
-          </div>
-        </div>
+        <div className="Table scrollable" id="d3-wrapper" />
       )}
     </>
   );
