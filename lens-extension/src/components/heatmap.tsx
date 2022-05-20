@@ -52,8 +52,11 @@ export const Heatmap = (heatmapProps: HeatmapProps) => {
   };
 
   const _calcColor = (verbs: any) => {
-    const notingColor = heatmapProps.theme === "light" ? "#f1f1f1" : "#1e2124";
-    const colorList = [notingColor, "#27641954", "#276419a8", "#276419"]; // rgb(39, 100, 25)
+    const lightColorList = ["#f1f1f1", "#9be9a8", "#40c463", "#30a14e"]; // "#216e39" last one
+    const darkColorList = ["#1e2124", "#0e4429", "#067037", "#2ba846"]; // #39d353 last one
+    const colorList =
+      heatmapProps.theme === "light" ? lightColorList : darkColorList;
+
     if (verbs == undefined || verbs.length == 0) return colorList[0];
     let verbsSet = new Set(verbs);
     if (verbsSet.has("delete") || verbsSet.has("deletecollection")) {
