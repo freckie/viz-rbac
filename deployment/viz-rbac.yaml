@@ -80,10 +80,16 @@ spec:
         resources:
           requests:
             memory: "128Mi"
-            cpu: "0.5"
+            cpu: "125m"
           limits:
             memory: "256Mi"
-            cpu: "1.0"
+            cpu: "250m"
+        readinessProbe:
+          httpGet:
+            path: /api/res/v1/namespaces
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
 
 ---
 # api-service.yaml
@@ -134,10 +140,10 @@ spec:
         resources:
           requests:
             memory: "256Mi"
-            cpu: "0.5"
+            cpu: "250m"
           limits:
             memory: "512Mi"
-            cpu: "1.0"
+            cpu: "500m"
 
 ---
 # web-service.yaml
