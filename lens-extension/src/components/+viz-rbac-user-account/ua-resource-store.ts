@@ -10,14 +10,14 @@ import fetch from 'node-fetch';
 import type { Response } from 'node-fetch';
 import { MyNamespaceStore } from '../my-namespace-store';
 
-export type SAResourceModel = {
-  serviceAccounts: Array<string>;
+export type UAResourceModel = {
+  userAccounts: Array<string>;
   resources: Array<string>;
-  authArray: Array<Array<Array<string>>>; // serviceAccounts에 대한 resource가 가진 권한
+  authArray: Array<Array<Array<string>>>; // userAccounts에 대한 resource가 가진 권한
   loading: boolean;
 };
 
-type ServiceAccounts = {
+type UserAccounts = {
   [key: string]: Resources;
 };
 
@@ -25,17 +25,17 @@ type Resources = {
   [key: string]: Array<string>;
 };
 
-export class SAResourceStore extends Common.Store
-  .ExtensionStore<SAResourceModel> {
-  @observable serviceAccounts = [''];
+export class UAResourceStore extends Common.Store
+  .ExtensionStore<UAResourceModel> {
+  @observable userAccounts = [''];
   @observable resources = [''];
   @observable authArray = [[['']]];
   @observable loading = false;
   constructor() {
     super({
-      configName: 'Service-Account-Resource-Store',
+      configName: 'User-Account-Resource-Store',
       defaults: {
-        serviceAccounts: [''],
+        userAccounts: [''],
         resources: [''],
         authArray: [[['']]],
         loading: false,
@@ -43,12 +43,11 @@ export class SAResourceStore extends Common.Store
     });
     makeObservable(this);
   }
-
   // test 를 위해 api api 따로 만들지 않고 여기에 다 넣었음
   // 추후 실제로 사용할 것이라면 api 모아서 따로 구현 필요
-  @action.bound async loadServiceAccounts() {
+  @action.bound async loadUserAccounts() {
     const myNamespaceStore = MyNamespaceStore.getInstanceOrCreate();
-    this.serviceAccounts = [''];
+    this.userAccounts = [''];
     this.resources = [''];
     this.authArray = [[['']]];
     this.loading = true;
@@ -59,7 +58,7 @@ export class SAResourceStore extends Common.Store
     // namespace 주소를 가져온 것이 유효한 경우에만 serviceAccounts를 가져온다
     if (myNamespaceStore.addressValidity) {
       const res: Response = await fetch(
-        `${myNamespaceStore.apiAddress}/api/agg/v1/heatmap/sa-res/${myNamespaceStore.selectedNamespace}`
+        `${myNamespaceStore.apiAddress}/api/agg/v1/heatmap/user-res/${myNamespaceStore.selectedNamespace}`
       );
       runInAction(async () => {
         let data;
@@ -69,7 +68,7 @@ export class SAResourceStore extends Common.Store
           data = text ? JSON.parse(text) : '';
         } catch (e) {
           data = text;
-          this.serviceAccounts = [''];
+          this.userAccounts = [''];
           this.resources = [''];
           this.authArray = [[['']]];
           this.loading = false;
@@ -80,14 +79,14 @@ export class SAResourceStore extends Common.Store
         }
       });
     } else {
-      this.serviceAccounts = [''];
+      this.userAccounts = [''];
       this.resources = [''];
       this.authArray = [[['']]];
       this.loading = false;
     }
   }
 
-  private async uniformData(serviceAccountData: ServiceAccounts) {
+  private async uniformData(serviceAccountData: UserAccounts) {
     const _ns = serviceAccountData;
 
     // Data
@@ -97,27 +96,27 @@ export class SAResourceStore extends Common.Store
     }
 
     this.resources = Array.from(_x);
-    this.serviceAccounts = Object.keys(_ns);
-    this.authArray = this.serviceAccounts.map((y) =>
+    this.userAccounts = Object.keys(_ns);
+    this.authArray = this.userAccounts.map((y) =>
       this.resources.map((x) => _ns[y][x])
     );
   }
 
   protected fromStore({
-    serviceAccounts,
+    userAccounts,
     resources,
     authArray,
     loading,
-  }: SAResourceModel): void {
-    this.serviceAccounts = serviceAccounts;
+  }: UAResourceModel): void {
+    this.userAccounts = userAccounts;
     this.resources = resources;
     this.authArray = authArray;
     this.loading = loading;
   }
 
-  toJSON(): SAResourceModel {
+  toJSON(): UAResourceModel {
     return {
-      serviceAccounts: this.serviceAccounts,
+      userAccounts: this.userAccounts,
       resources: this.resources,
       authArray: this.authArray,
       loading: this.loading,
@@ -131,7 +130,7 @@ export class SAResourceStore extends Common.Store
       const newInstance = this.createInstance();
       reaction(
         () => MyNamespaceStore.getInstanceOrCreate().selectedNamespace,
-        () => newInstance.loadServiceAccounts()
+        () => newInstance.loadUserAccounts()
       );
       return newInstance;
     }
