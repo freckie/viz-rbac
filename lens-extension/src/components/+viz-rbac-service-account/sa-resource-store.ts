@@ -1,8 +1,15 @@
-import { Common } from "@k8slens/extensions";
-import { observable, makeObservable, runInAction, action } from "mobx";
-import fetch from "node-fetch";
-import type { Response, RequestInit } from "node-fetch";
-import { MyNamespaceStore } from "../my-namespace-store";
+import { Common } from '@k8slens/extensions';
+import {
+  observable,
+  makeObservable,
+  runInAction,
+  action,
+  reaction,
+} from 'mobx';
+import fetch from 'node-fetch';
+import type { Response, RequestInit } from 'node-fetch';
+import { MyNamespaceStore } from '../my-namespace-store';
+import { observer } from 'mobx-react';
 
 export type SAResourceModel = {
   serviceAccounts: Array<string>;
@@ -21,17 +28,17 @@ type Resources = {
 
 export class SAResourceStore extends Common.Store
   .ExtensionStore<SAResourceModel> {
-  @observable serviceAccounts = [""];
-  @observable resources = [""];
-  @observable authArray = [[[""]]];
+  @observable serviceAccounts = [''];
+  @observable resources = [''];
+  @observable authArray = [[['']]];
   @observable loading = false;
-  public constructor() {
+  constructor() {
     super({
-      configName: "Service-Account-Resource-Store",
+      configName: 'Service-Account-Resource-Store',
       defaults: {
-        serviceAccounts: [""],
-        resources: [""],
-        authArray: [[[""]]],
+        serviceAccounts: [''],
+        resources: [''],
+        authArray: [[['']]],
         loading: false,
       },
     });
@@ -40,14 +47,14 @@ export class SAResourceStore extends Common.Store
 
   // test 를 위해 api api 따로 만들지 않고 여기에 다 넣었음
   // 추후 실제로 사용할 것이라면 api 모아서 따로 구현 필요
-  async loadServiceAccounts() {
+  @action.bound async loadServiceAccounts() {
     const myNamespaceStore = MyNamespaceStore.getInstanceOrCreate();
-    this.serviceAccounts = [""];
-    this.resources = [""];
-    this.authArray = [[[""]]];
+    this.serviceAccounts = [''];
+    this.resources = [''];
+    this.authArray = [[['']]];
     this.loading = true;
     console.log(
-      "load service account 실행 : ",
+      'load service account 실행 : ',
       myNamespaceStore.addressValidity
     );
     // namespace 주소를 가져온 것이 유효한 경우에만 serviceAccounts를 가져온다
@@ -60,12 +67,12 @@ export class SAResourceStore extends Common.Store
         let text;
         try {
           text = await res.text();
-          data = text ? JSON.parse(text) : "";
+          data = text ? JSON.parse(text) : '';
         } catch (e) {
           data = text;
-          this.serviceAccounts = [""];
-          this.resources = [""];
-          this.authArray = [[[""]]];
+          this.serviceAccounts = [''];
+          this.resources = [''];
+          this.authArray = [[['']]];
           this.loading = false;
         } finally {
           // data 정재하고 넣기
@@ -74,9 +81,9 @@ export class SAResourceStore extends Common.Store
         }
       });
     } else {
-      this.serviceAccounts = [""];
-      this.resources = [""];
-      this.authArray = [[[""]]];
+      this.serviceAccounts = [''];
+      this.resources = [''];
+      this.authArray = [[['']]];
       this.loading = false;
     }
   }
@@ -122,7 +129,12 @@ export class SAResourceStore extends Common.Store
     try {
       return this.getInstance();
     } catch {
-      return this.createInstance();
+      const newInstance = this.createInstance();
+      reaction(
+        () => MyNamespaceStore.getInstanceOrCreate().selectedNamespace,
+        () => newInstance.loadServiceAccounts()
+      );
+      return newInstance;
     }
   }
 }
