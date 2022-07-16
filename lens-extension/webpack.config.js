@@ -4,8 +4,8 @@ module.exports = [
   {
     entry: './main.ts',
     context: __dirname,
-    target: "electron-main",
-    mode: "production",
+    target: 'electron-main',
+    mode: 'production',
     module: {
       rules: [
         {
@@ -17,16 +17,16 @@ module.exports = [
     },
     externals: [
       {
-        "@k8slens/extensions": "var global.LensExtensions",
-        "mobx": "var global.Mobx",
-        "react": "var global.React"
-      }
+        '@k8slens/extensions': 'var global.LensExtensions',
+        mobx: 'var global.Mobx',
+        react: 'var global.React',
+      },
     ],
     resolve: {
-      extensions: [ '.tsx', '.ts', '.js' ],
+      extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-      libraryTarget: "commonjs2",
+      libraryTarget: 'commonjs2',
       filename: 'main.js',
       path: path.resolve(__dirname, 'dist'),
     },
@@ -34,8 +34,8 @@ module.exports = [
   {
     entry: './renderer.tsx',
     context: __dirname,
-    target: "electron-renderer",
-    mode: "production",
+    target: 'electron-renderer',
+    mode: 'production',
     module: {
       rules: [
         {
@@ -43,27 +43,31 @@ module.exports = [
           use: 'ts-loader',
           exclude: /node_modules/,
         },
+        {
+          test: /\.s?css$/,
+          use: ['style-loader', 'css-loader', 'sass-loader'],
+        },
       ],
     },
     externals: [
       {
-        "@k8slens/extensions": "var global.LensExtensions",
-        "react": "var global.React",
-        "mobx": "var global.Mobx"
-      }
+        '@k8slens/extensions': 'var global.LensExtensions',
+        react: 'var global.React',
+        mobx: 'var global.Mobx',
+      },
     ],
     resolve: {
-      extensions: [ '.tsx', '.ts', '.js' ],
+      extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-      libraryTarget: "commonjs2",
-      globalObject: "this",
+      libraryTarget: 'commonjs2',
+      globalObject: 'this',
       filename: 'renderer.js',
       path: path.resolve(__dirname, 'dist'),
     },
     node: {
       __dirname: false,
-      __filename: false
-    }
+      __filename: false,
+    },
   },
 ];
