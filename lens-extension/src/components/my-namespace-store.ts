@@ -1,14 +1,9 @@
 import { Common } from '@k8slens/extensions';
-import {
-  observable,
-  makeObservable,
-  runInAction,
-  action,
-  computed,
-} from 'mobx';
+import { observable, makeObservable, runInAction, action } from 'mobx';
 import fetch from 'node-fetch';
-import type { Response, RequestInit } from 'node-fetch';
+import type { Response } from 'node-fetch';
 import { reaction } from 'mobx';
+import { UANamespaceStore } from './+viz-rbac-user-account/ua-namespace-store';
 
 export type MyNamespaceModel = {
   namespaces: Array<string>;
@@ -50,35 +45,34 @@ export class MyNamespaceStore extends Common.Store
   // 추후 실제로 사용할 것이라면 api 모아서 따로 구현 필요
 
   @action.bound public async loadMyNamespaces() {
-    console.log('load my namespace 실행 : ', this.apiAddress);
-    console.log('dkrdkr');
     this.namespaces = [];
     this.namespacesCount = 0;
     this.addressValidity = false;
     this.selectedNamespace = '';
 
-    runInAction(async () => {
-      let data;
-      let text;
-      try {
-        const res: Response = await fetch(
-          `${this.apiAddress}/api/res/v1/namespaces`
-        );
-        text = await res.text();
-        data = text ? JSON.parse(text) : '';
-      } catch (e) {
-        data = text;
+    let data: any;
+    let text: any;
+    try {
+      const res: Response = await fetch(
+        `${this.apiAddress}/api/res/v1/namespaces`
+      );
+      text = await res.text();
+      data = text ? JSON.parse(text) : '';
+    } catch (e) {
+      runInAction(() => {
         this.namespaces = [];
         this.namespacesCount = 0;
         this.addressValidity = false;
         this.selectedNamespace = '';
-      } finally {
+      });
+    } finally {
+      runInAction(() => {
         this.namespaces = data.data.namespaces;
         this.namespacesCount = data.data.namespaces_count;
         this.addressValidity = true;
         this.selectedNamespace = '';
-      }
-    });
+      });
+    }
   }
 
   protected fromStore({
@@ -112,7 +106,10 @@ export class MyNamespaceStore extends Common.Store
       const newInstance = this.createInstance();
       reaction(
         () => newInstance.apiAddress,
-        () => newInstance.loadMyNamespaces()
+        async () => {
+          await newInstance.loadMyNamespaces();
+          await UANamespaceStore.getInstance().loadUserNamespacesCount();
+        }
       );
       return newInstance;
     }
