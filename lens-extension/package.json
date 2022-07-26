@@ -28,20 +28,19 @@
     "build": "npm run clean && webpack",
     "clean": "rm -rf ./dist"
   },
-  "dependencies": {
-    "@types/d3": "^7.1.0",
-    "d3": "^7.4.4",
-    "mobx": "^6.5.0",
-    "mobx-react": "^7.3.0",
-    "node-fetch": "lensapp/node-fetch#2.x",
-    "react-open-doodles": "^1.0.5"
-  },
   "devDependencies": {
     "@k8slens/extensions": "5.4.5",
+    "@material-ui/core": "^4.12.4",
+    "@types/d3": "^7.4.0",
     "@types/node": "^12.0.0",
     "@types/node-fetch": "^2.6.1",
     "@types/react": "^16.9.35",
     "css-loader": "^5.2.7",
+    "d3": "^7.6.1",
+    "mobx": "^6.6.1",
+    "mobx-react": "^7.5.2",
+    "node-fetch": "github:lensapp/node-fetch#2.x",
+    "react-open-doodles": "^1.0.5",
     "sass": "^1.53.0",
     "sass-loader": "^10.2.0",
     "style-loader": "^2.0.0",
