@@ -1,11 +1,13 @@
+import React from 'react';
 import { Renderer } from '@k8slens/extensions';
 import { ServiceAccountPage } from './src/components/+viz-rbac-service-account/service-account';
 import { UserAccountPage } from './src/components/+viz-rbac-user-account/user-account';
 import { SettingPage } from './src/components/+viz-rbac-settings/settings';
-import React from 'react';
 import { MyNamespaceStore } from './src/components/my-namespace-store';
 import { SAResourceStore } from './src/components/+viz-rbac-service-account/sa-resource-store';
 import { UAResourceStore } from './src/components/+viz-rbac-user-account/ua-resource-store';
+import { UANamespaceStore } from './src/components/+viz-rbac-user-account/ua-namespace-store';
+
 export function VizRBACIcon(props: Renderer.Component.IconProps) {
   return (
     <Renderer.Component.Icon {...props} material='pages' tooltip={'VIZ_RBAC'} />
@@ -17,6 +19,7 @@ export default class VizRBACExtension extends Renderer.LensExtension {
     MyNamespaceStore.getInstanceOrCreate().loadExtension(this);
     SAResourceStore.getInstanceOrCreate().loadExtension(this);
     UAResourceStore.getInstanceOrCreate().loadExtension(this);
+    UANamespaceStore.getInstanceOrCreate().loadExtension(this);
 
     console.log('viz-rbac');
   }
