@@ -1,7 +1,8 @@
 /**
- * 원본 작성자 : frekie
+ * Original Author : frekie
  * https://github.com/juicyorange/viz-rbac/blob/feature/lens/web/src/api/heatmap.js
- * typescript 적용
+ * Update to use typescript
+ * Add res, ns heatmap type
  */
 
 import * as d3 from 'd3';

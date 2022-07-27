@@ -3,7 +3,7 @@ import { observable, makeObservable, runInAction, action } from 'mobx';
 import fetch from 'node-fetch';
 import type { Response } from 'node-fetch';
 import { reaction } from 'mobx';
-import { UANamespaceStore } from './+viz-rbac-user-account/ua-namespace-store';
+import { UANamespaceAuthCountStore } from './+viz-rbac-user-account/ua-namespace-auth-count-store';
 
 export type MyNamespaceModel = {
   namespaces: Array<string>;
@@ -17,9 +17,9 @@ export class MyNamespaceStore extends Common.Store
   .ExtensionStore<MyNamespaceModel> {
   @observable apiAddress = '';
   @observable selectedNamespace = '';
+  @observable addressValidity = false;
   namespaces = [''];
   namespacesCount = 0;
-  addressValidity = false;
   public constructor() {
     super({
       configName: 'my-namespace-store',
@@ -41,35 +41,37 @@ export class MyNamespaceStore extends Common.Store
   @action public changeSelectedNamespace(newNamespace: string) {
     this.selectedNamespace = newNamespace;
   }
-  // test 를 위해 api api 따로 만들지 않고 여기에 다 넣었음
-  // 추후 실제로 사용할 것이라면 api 모아서 따로 구현 필요
-
+  /**
+   * load namespaces from stored api server
+   */
   @action.bound public async loadMyNamespaces() {
     this.namespaces = [];
     this.namespacesCount = 0;
     this.addressValidity = false;
     this.selectedNamespace = '';
 
+    console.log('[viz-rbac] Run load namespace');
+
+    const res: Response = await fetch(
+      `${this.apiAddress}/api/res/v1/namespaces`
+    );
+
     let data: any;
     let text: any;
     try {
-      const res: Response = await fetch(
-        `${this.apiAddress}/api/res/v1/namespaces`
-      );
       text = await res.text();
-      data = text ? JSON.parse(text) : '';
+      data = text ? await JSON.parse(text) : '';
+      runInAction(() => {
+        this.namespaces = data.data.namespaces;
+        this.namespacesCount = data.data.namespaces_count;
+        this.addressValidity = true;
+        this.selectedNamespace = '';
+      });
     } catch (e) {
       runInAction(() => {
         this.namespaces = [];
         this.namespacesCount = 0;
         this.addressValidity = false;
-        this.selectedNamespace = '';
-      });
-    } finally {
-      runInAction(() => {
-        this.namespaces = data.data.namespaces;
-        this.namespacesCount = data.data.namespaces_count;
-        this.addressValidity = true;
         this.selectedNamespace = '';
       });
     }
@@ -104,11 +106,12 @@ export class MyNamespaceStore extends Common.Store
       return this.getInstance();
     } catch {
       const newInstance = this.createInstance();
+      // if api address change, reload myNamespaces and userAccountNamespaceAuthCount
       reaction(
         () => newInstance.apiAddress,
         async () => {
           await newInstance.loadMyNamespaces();
-          await UANamespaceStore.getInstance().loadUserNamespacesCount();
+          await UANamespaceAuthCountStore.getInstance().loadUserNamespaceAuthCounts();
         }
       );
       return newInstance;

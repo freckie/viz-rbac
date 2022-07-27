@@ -4,14 +4,16 @@ import { MyNamespaceStore } from '../my-namespace-store';
 import { SAResourceStore } from './sa-resource-store';
 import { observer } from 'mobx-react';
 import { Heatmap } from '../heatmap';
+import { UAResourceStore } from '../+viz-rbac-user-account/ua-resource-store';
 
 @observer
-export class ServiceAccountPage extends React.Component<{
+export class ServiceAccountsPage extends React.Component<{
   extension: Renderer.LensExtension;
 }> {
   render() {
     const mynamespaceStore = MyNamespaceStore.getInstanceOrCreate();
     const sAResourceStore = SAResourceStore.getInstanceOrCreate();
+    const uAResourceStore = UAResourceStore.getInstanceOrCreate();
     return (
       <div className='ItemListLayout flex column'>
         <div className='header flex gaps align-center'>
@@ -30,7 +32,7 @@ export class ServiceAccountPage extends React.Component<{
               mynamespaceStore.changeSelectedNamespace(value);
             }}
             value={mynamespaceStore.selectedNamespace}
-            isDisabled={sAResourceStore.loading}
+            isDisabled={sAResourceStore.loading || uAResourceStore.loading}
           />
         </div>
         <div className='items grow flex column'>
@@ -44,7 +46,7 @@ export class ServiceAccountPage extends React.Component<{
           <Heatmap
             xlabels={sAResourceStore.resources}
             ylabels={sAResourceStore.serviceAccounts}
-            data={sAResourceStore.authArray}
+            data={sAResourceStore.resourceAuths}
             loading={sAResourceStore.loading}
             addressValidity={mynamespaceStore.addressValidity}
             theme={Renderer.Theme.getActiveTheme().type}

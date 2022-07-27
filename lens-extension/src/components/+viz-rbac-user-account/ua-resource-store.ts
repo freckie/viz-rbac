@@ -13,9 +13,9 @@ import { MyNamespaceStore } from '../my-namespace-store';
 export type UAResourceModel = {
   userAccounts: Array<string>;
   resources: Array<string>;
-  authArray: Array<Array<Array<string>>>; // userAccounts에 대한 resource가 가진 권한
+  resourceAuths: Array<Array<Array<string>>>; // resource auth
   loading: boolean;
-  selected: boolean;
+  selected: boolean; // is res selected
 };
 
 type UserAccounts = {
@@ -30,62 +30,59 @@ export class UAResourceStore extends Common.Store
   .ExtensionStore<UAResourceModel> {
   @observable userAccounts = [''];
   @observable resources = [''];
-  @observable authArray = [[['']]];
+  @observable resourceAuths = [[['']]];
   @observable loading = false;
   @observable selected = false;
   constructor() {
     super({
-      configName: 'User-Account-Resource-Store',
+      configName: 'User-Accounts-Resource-Store',
       defaults: {
         userAccounts: [''],
         resources: [''],
-        authArray: [[['']]],
+        resourceAuths: [[['']]],
         loading: false,
         selected: false,
       },
     });
     makeObservable(this);
   }
-  // test 를 위해 api api 따로 만들지 않고 여기에 다 넣었음
-  // 추후 실제로 사용할 것이라면 api 모아서 따로 구현 필요
+
+  /**
+   * load user account resource from stored api server
+   */
   @action.bound async loadUserResources() {
     const myNamespaceStore = MyNamespaceStore.getInstance();
-    this.userAccounts = [''];
-    this.resources = [''];
-    this.authArray = [[['']]];
     this.loading = true;
-    console.log(
-      'load user account resource 실행 : ',
-      myNamespaceStore.addressValidity
-    );
-    // namespace 주소를 가져온 것이 유효한 경우에만 userAccounts를 가져온다
+
+    console.log('[viz-rbac] Run load user account resource');
+
+    // only address is valid
     if (myNamespaceStore.addressValidity) {
       const res: Response = await fetch(
         `${myNamespaceStore.apiAddress}/api/agg/v1/heatmap/user-res/${myNamespaceStore.selectedNamespace}`
       );
-      runInAction(async () => {
-        let data;
-        let text;
-        try {
-          text = await res.text();
-          data = text ? JSON.parse(text) : '';
-        } catch (e) {
-          data = text;
+      let data: any;
+      let text: any;
+      try {
+        text = await res.text();
+        data = text ? await JSON.parse(text) : '';
+        await this.uniformData(data.data);
+      } catch (e) {
+        console.log(e);
+        runInAction(async () => {
           this.userAccounts = [''];
           this.resources = [''];
-          this.authArray = [[['']]];
+          this.resourceAuths = [[['']]];
           this.loading = false;
-        } finally {
-          // data 정재하고 넣기
-          await this.uniformData(data.data);
-          this.loading = false;
-        }
-      });
+        });
+      }
     } else {
-      this.userAccounts = [''];
-      this.resources = [''];
-      this.authArray = [[['']]];
-      this.loading = false;
+      runInAction(() => {
+        this.userAccounts = [''];
+        this.resources = [''];
+        this.resourceAuths = [[['']]];
+        this.loading = false;
+      });
     }
   }
 
@@ -97,24 +94,26 @@ export class UAResourceStore extends Common.Store
     for (const [k] of Object.entries(_ns)) {
       Object.keys(_ns[k]).forEach((it) => _x.add(it));
     }
-
-    this.resources = Array.from(_x);
-    this.userAccounts = Object.keys(_ns);
-    this.authArray = this.userAccounts.map((y) =>
-      this.resources.map((x) => _ns[y][x])
-    );
+    runInAction(() => {
+      this.resources = Array.from(_x);
+      this.userAccounts = Object.keys(_ns);
+      this.resourceAuths = this.userAccounts.map((y) =>
+        this.resources.map((x) => _ns[y][x])
+      );
+      this.loading = false;
+    });
   }
 
   protected fromStore({
     userAccounts,
     resources,
-    authArray,
+    resourceAuths,
     loading,
     selected,
   }: UAResourceModel): void {
     this.userAccounts = userAccounts;
     this.resources = resources;
-    this.authArray = authArray;
+    this.resourceAuths = resourceAuths;
     this.loading = loading;
     this.selected = selected;
   }
@@ -123,7 +122,7 @@ export class UAResourceStore extends Common.Store
     return {
       userAccounts: this.userAccounts,
       resources: this.resources,
-      authArray: this.authArray,
+      resourceAuths: this.resourceAuths,
       loading: this.loading,
       selected: this.selected,
     };
@@ -134,6 +133,7 @@ export class UAResourceStore extends Common.Store
       return this.getInstance();
     } catch {
       const newInstance = this.createInstance();
+      // if selected namespace change, reload userResources
       reaction(
         () => MyNamespaceStore.getInstance().selectedNamespace,
         () => newInstance.loadUserResources()

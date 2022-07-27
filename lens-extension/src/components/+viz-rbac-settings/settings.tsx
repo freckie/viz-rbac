@@ -1,13 +1,10 @@
 import { Renderer } from '@k8slens/extensions';
 import { MyNamespaceStore } from './../my-namespace-store';
-import { CoffeeDoodle } from 'react-open-doodles';
-import path from 'path';
 import React from 'react';
-import { inject, observer } from 'mobx-react';
-import { reaction, observable, autorun } from 'mobx';
+import { observer } from 'mobx-react';
 
 @observer
-export class SettingPage extends React.Component<{
+export class SettingsPage extends React.Component<{
   extension: Renderer.LensExtension;
 }> {
   state = {
@@ -15,16 +12,10 @@ export class SettingPage extends React.Component<{
   };
   render() {
     const mynamespaceStore = MyNamespaceStore.getInstanceOrCreate();
-    const doodleStyle = {
-      width: '200px',
-    };
     return (
       <div className='flex column gaps align-flex-start'>
-        <div style={doodleStyle}>
-          <CoffeeDoodle accent='#3d90ce' />
-        </div>
         <p>setting page</p>
-        <div style={{ display: 'flex' }}>
+        <div className='flex'>
           <Renderer.Component.Input
             value={this.state.apiAddr}
             onChange={(v) => {
@@ -38,7 +29,7 @@ export class SettingPage extends React.Component<{
               mynamespaceStore.apiAddress = this.state.apiAddr;
             }}
           >
-            저장
+            apply
           </button>
         </div>
       </div>

@@ -5,21 +5,23 @@ import { MyNamespaceStore } from './../my-namespace-store';
 import { UAResourceStore } from './ua-resource-store';
 import { observer } from 'mobx-react';
 import { Heatmap } from '../heatmap';
-import { UANamespaceStore } from './ua-namespace-store';
+import { UANamespaceAuthCountStore } from './ua-namespace-auth-count-store';
+import { SAResourceStore } from '../+viz-rbac-service-account/sa-resource-store';
 
 @observer
-export class UserAccountPage extends React.Component<{
+export class UserAccountsPage extends React.Component<{
   extension: Renderer.LensExtension;
 }> {
   render() {
     const mynamespaceStore = MyNamespaceStore.getInstance();
+    const sAResourceStore = SAResourceStore.getInstanceOrCreate();
     const uAResourceStore = UAResourceStore.getInstance();
-    const uANamespaceStore = UANamespaceStore.getInstance();
+    const uANamespaceAuthCountStore = UANamespaceAuthCountStore.getInstance();
 
     return (
       <div className='ItemListLayout flex column'>
         <div className='header flex gaps align-center'>
-          <h5 className='title'>User Account</h5>
+          <h5 className='title'>User Accounts</h5>
           <div className='info-panel box grow'>
             {uAResourceStore.userAccounts.length} userAccounts
           </div>
@@ -30,7 +32,8 @@ export class UserAccountPage extends React.Component<{
               checked={uAResourceStore.selected}
               onChange={() => {
                 uAResourceStore.selected = !uAResourceStore.selected;
-                uANamespaceStore.selected = !uANamespaceStore.selected;
+                uANamespaceAuthCountStore.selected =
+                  !uANamespaceAuthCountStore.selected;
               }}
             />
             <span> RES</span>
@@ -43,7 +46,11 @@ export class UserAccountPage extends React.Component<{
               mynamespaceStore.changeSelectedNamespace(value);
             }}
             value={mynamespaceStore.selectedNamespace}
-            isDisabled={uAResourceStore.loading || uANamespaceStore.selected}
+            isDisabled={
+              uAResourceStore.loading ||
+              sAResourceStore.loading ||
+              uANamespaceAuthCountStore.selected
+            }
           />
         </div>
         <div className='items grow flex column'>
@@ -58,7 +65,7 @@ export class UserAccountPage extends React.Component<{
             <Heatmap
               xlabels={uAResourceStore.resources}
               ylabels={uAResourceStore.userAccounts}
-              data={uAResourceStore.authArray}
+              data={uAResourceStore.resourceAuths}
               loading={uAResourceStore.loading}
               addressValidity={mynamespaceStore.addressValidity}
               theme={Renderer.Theme.getActiveTheme().type}
@@ -67,12 +74,12 @@ export class UserAccountPage extends React.Component<{
           ) : (
             ''
           )}
-          {uANamespaceStore.selected ? (
+          {uANamespaceAuthCountStore.selected ? (
             <Heatmap
-              xlabels={uANamespaceStore.namespaces}
-              ylabels={uANamespaceStore.userAccounts}
-              data={uANamespaceStore.countArray}
-              loading={uANamespaceStore.loading}
+              xlabels={uANamespaceAuthCountStore.namespaces}
+              ylabels={uANamespaceAuthCountStore.userAccounts}
+              data={uANamespaceAuthCountStore.namespaceAuthCounts}
+              loading={uANamespaceAuthCountStore.loading}
               addressValidity={mynamespaceStore.addressValidity}
               theme={Renderer.Theme.getActiveTheme().type}
               type='ns'

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Renderer } from '@k8slens/extensions';
-import { ServiceAccountPage } from './src/components/+viz-rbac-service-account/service-account';
-import { UserAccountPage } from './src/components/+viz-rbac-user-account/user-account';
-import { SettingPage } from './src/components/+viz-rbac-settings/settings';
+import { ServiceAccountsPage } from './src/components/+viz-rbac-service-account/service-accounts';
+import { UserAccountsPage } from './src/components/+viz-rbac-user-account/user-accounts';
+import { SettingsPage } from './src/components/+viz-rbac-settings/settings';
 import { MyNamespaceStore } from './src/components/my-namespace-store';
 import { SAResourceStore } from './src/components/+viz-rbac-service-account/sa-resource-store';
 import { UAResourceStore } from './src/components/+viz-rbac-user-account/ua-resource-store';
-import { UANamespaceStore } from './src/components/+viz-rbac-user-account/ua-namespace-store';
+import { UANamespaceAuthCountStore } from './src/components/+viz-rbac-user-account/ua-namespace-auth-count-store';
 
 export function VizRBACIcon(props: Renderer.Component.IconProps) {
   return (
@@ -19,28 +19,28 @@ export default class VizRBACExtension extends Renderer.LensExtension {
     MyNamespaceStore.getInstanceOrCreate().loadExtension(this);
     SAResourceStore.getInstanceOrCreate().loadExtension(this);
     UAResourceStore.getInstanceOrCreate().loadExtension(this);
-    UANamespaceStore.getInstanceOrCreate().loadExtension(this);
+    UANamespaceAuthCountStore.getInstanceOrCreate().loadExtension(this);
 
-    console.log('viz-rbac');
+    console.log('[viz-rbac] activate');
   }
 
   clusterPages = [
     {
-      id: 'service-account',
+      id: 'service-accounts',
       components: {
-        Page: () => <ServiceAccountPage extension={this} />,
+        Page: () => <ServiceAccountsPage extension={this} />,
       },
     },
     {
-      id: 'user-account',
+      id: 'user-accounts',
       components: {
-        Page: () => <UserAccountPage extension={this} />,
+        Page: () => <UserAccountsPage extension={this} />,
       },
     },
     {
       id: 'settings',
       components: {
-        Page: () => <SettingPage extension={this} />,
+        Page: () => <SettingsPage extension={this} />,
       },
     },
   ];
@@ -54,18 +54,18 @@ export default class VizRBACExtension extends Renderer.LensExtension {
       },
     },
     {
-      id: 'service-account',
+      id: 'service-accounts',
       parentId: 'viz-rbac',
-      target: { pageId: 'service-account' },
+      target: { pageId: 'service-accounts' },
       title: 'Service Accounts',
       components: {
         Icon: VizRBACIcon,
       },
     },
     {
-      id: 'user-account',
+      id: 'user-accounts',
       parentId: 'viz-rbac',
-      target: { pageId: 'user-account' },
+      target: { pageId: 'user-accounts' },
       title: 'User Accounts',
       components: {
         Icon: VizRBACIcon,

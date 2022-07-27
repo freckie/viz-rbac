@@ -13,7 +13,7 @@ import { MyNamespaceStore } from '../my-namespace-store';
 export type SAResourceModel = {
   serviceAccounts: Array<string>;
   resources: Array<string>;
-  authArray: Array<Array<Array<string>>>; // serviceAccounts에 대한 resource가 가진 권한
+  resourceAuths: Array<Array<Array<string>>>; // resource auth
   loading: boolean;
 };
 
@@ -29,61 +29,57 @@ export class SAResourceStore extends Common.Store
   .ExtensionStore<SAResourceModel> {
   @observable serviceAccounts = [''];
   @observable resources = [''];
-  @observable authArray = [[['']]];
+  @observable resourceAuths = [[['']]];
   @observable loading = false;
   constructor() {
     super({
-      configName: 'Service-Account-Resource-Store',
+      configName: 'Service-Accounts-Resource-Store',
       defaults: {
         serviceAccounts: [''],
         resources: [''],
-        authArray: [[['']]],
+        resourceAuths: [[['']]],
         loading: false,
       },
     });
     makeObservable(this);
   }
 
-  // test 를 위해 api api 따로 만들지 않고 여기에 다 넣었음
-  // 추후 실제로 사용할 것이라면 api 모아서 따로 구현 필요
+  /**
+   * load service account resource from stored api server
+   */
   @action.bound async loadServiceAccounts() {
     const myNamespaceStore = MyNamespaceStore.getInstanceOrCreate();
-    this.serviceAccounts = [''];
-    this.resources = [''];
-    this.authArray = [[['']]];
     this.loading = true;
-    console.log(
-      'load service account 실행 : ',
-      myNamespaceStore.addressValidity
-    );
-    // namespace 주소를 가져온 것이 유효한 경우에만 serviceAccounts를 가져온다
+
+    console.log('[viz-rbac] Run load service account resource');
+
+    // only address is valid
     if (myNamespaceStore.addressValidity) {
       const res: Response = await fetch(
         `${myNamespaceStore.apiAddress}/api/agg/v1/heatmap/sa-res/${myNamespaceStore.selectedNamespace}`
       );
-      runInAction(async () => {
-        let data;
-        let text;
-        try {
-          text = await res.text();
-          data = text ? JSON.parse(text) : '';
-        } catch (e) {
-          data = text;
+      let data: any;
+      let text: any;
+      try {
+        text = await res.text();
+        data = text ? await JSON.parse(text) : '';
+        await this.uniformData(data.data);
+      } catch (e) {
+        console.log(e);
+        runInAction(async () => {
           this.serviceAccounts = [''];
           this.resources = [''];
-          this.authArray = [[['']]];
+          this.resourceAuths = [[['']]];
           this.loading = false;
-        } finally {
-          // data 정재하고 넣기
-          await this.uniformData(data.data);
-          this.loading = false;
-        }
-      });
+        });
+      }
     } else {
-      this.serviceAccounts = [''];
-      this.resources = [''];
-      this.authArray = [[['']]];
-      this.loading = false;
+      runInAction(() => {
+        this.serviceAccounts = [''];
+        this.resources = [''];
+        this.resourceAuths = [[['']]];
+        this.loading = false;
+      });
     }
   }
 
@@ -95,23 +91,25 @@ export class SAResourceStore extends Common.Store
     for (const [k] of Object.entries(_ns)) {
       Object.keys(_ns[k]).forEach((it) => _x.add(it));
     }
-
-    this.resources = Array.from(_x);
-    this.serviceAccounts = Object.keys(_ns);
-    this.authArray = this.serviceAccounts.map((y) =>
-      this.resources.map((x) => _ns[y][x])
-    );
+    runInAction(async () => {
+      this.resources = Array.from(_x);
+      this.serviceAccounts = Object.keys(_ns);
+      this.resourceAuths = this.serviceAccounts.map((y) =>
+        this.resources.map((x) => _ns[y][x])
+      );
+      this.loading = false;
+    });
   }
 
   protected fromStore({
     serviceAccounts,
     resources,
-    authArray,
+    resourceAuths,
     loading,
   }: SAResourceModel): void {
     this.serviceAccounts = serviceAccounts;
     this.resources = resources;
-    this.authArray = authArray;
+    this.resourceAuths = resourceAuths;
     this.loading = loading;
   }
 
@@ -119,7 +117,7 @@ export class SAResourceStore extends Common.Store
     return {
       serviceAccounts: this.serviceAccounts,
       resources: this.resources,
-      authArray: this.authArray,
+      resourceAuths: this.resourceAuths,
       loading: this.loading,
     };
   }
@@ -129,6 +127,7 @@ export class SAResourceStore extends Common.Store
       return this.getInstance();
     } catch {
       const newInstance = this.createInstance();
+      // if selected namespace change, reload data
       reaction(
         () => MyNamespaceStore.getInstanceOrCreate().selectedNamespace,
         () => newInstance.loadServiceAccounts()
