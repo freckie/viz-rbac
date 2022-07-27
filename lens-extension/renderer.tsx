@@ -57,7 +57,7 @@ export default class VizRBACExtension extends Renderer.LensExtension {
       id: 'service-account',
       parentId: 'viz-rbac',
       target: { pageId: 'service-account' },
-      title: 'Service Account',
+      title: 'Service Accounts',
       components: {
         Icon: VizRBACIcon,
       },
@@ -66,7 +66,7 @@ export default class VizRBACExtension extends Renderer.LensExtension {
       id: 'user-account',
       parentId: 'viz-rbac',
       target: { pageId: 'user-account' },
-      title: 'User Account',
+      title: 'User Accounts',
       components: {
         Icon: VizRBACIcon,
       },
