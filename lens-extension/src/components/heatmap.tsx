@@ -48,7 +48,7 @@ export const Heatmap = (heatmapProps: HeatmapProps) => {
   };
 
   const _breakString = (str: string) => {
-    const limit = 7;
+    const limit = 10;
     const _fn = (st: string, limit: number) =>
       str.length <= limit ? str + '   ' : str.substr(0, limit) + '...';
     return _fn(str, limit);
