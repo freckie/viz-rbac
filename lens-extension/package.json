@@ -1,7 +1,7 @@
 {
   "name": "@freckie/viz-rbac",
   "version": "0.0.1",
-  "author": "Kim Taeyoung (@juicyorange)",
+  "author": "Taeyoung Kim (@juicyorange)",
   "maintainers": [
     {
       "name": "freckie",
@@ -21,7 +21,6 @@
   "engines": {
     "lens": "^5.0.0"
   },
-  "main": "dist/main.js",
   "renderer": "dist/renderer.js",
   "scripts": {
     "start": "webpack --watch",
