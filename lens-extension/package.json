@@ -1,0 +1,63 @@
+{
+  "name": "@freckie/viz-rbac",
+  "version": "0.0.1",
+  "author": "Taeyoung Kim (@juicyorange)",
+  "maintainers": [
+    {
+      "name": "freckie",
+      "email": "freckie@frec.kr"
+    },
+    {
+      "name": "juicyorange",
+      "email": "rlaxodud980909@naver.com"
+    }
+  ],
+  "description": "Lens extension for visualizing k8s RBAC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/freckie/viz-rbac",
+    "directory": "lens-extension"
+  },
+  "engines": {
+    "lens": "^5.0.0"
+  },
+  "renderer": "dist/renderer.js",
+  "scripts": {
+    "start": "webpack --watch",
+    "build": "npm run clean && webpack",
+    "clean": "rm -rf ./dist"
+  },
+  "devDependencies": {
+    "@k8slens/extensions": "5.4.5",
+    "@material-ui/core": "^4.12.4",
+    "@types/d3": "^7.4.0",
+    "@types/node": "^12.0.0",
+    "@types/node-fetch": "^2.6.1",
+    "@types/react": "^16.9.35",
+    "css-loader": "^5.2.7",
+    "d3": "^7.6.1",
+    "mobx": "^6.6.1",
+    "mobx-react": "^7.5.2",
+    "node-fetch": "github:lensapp/node-fetch#2.x",
+    "react-open-doodles": "^1.0.5",
+    "sass": "^1.53.0",
+    "sass-loader": "^10.2.0",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^8.0.4",
+    "typescript": "^4.0.3",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.11"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/freckie/viz-rbac",
+  "bugs": {
+    "url": "https://github.com/freckie/viz-rbac/issues"
+  },
+  "keywords": [
+    "extension",
+    "k8slens",
+    "lens",
+    "rbac",
+    "viz-rbac"
+  ]
+}
