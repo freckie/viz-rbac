@@ -36,7 +36,7 @@ export class UserAccountsPage extends React.Component<{
                   !uANamespaceAuthCountStore.selected;
               }}
             />
-            <span> RES</span>
+            <span> Res</span>
           </div>
           <Renderer.Component.Select
             id='container-selector-input'
