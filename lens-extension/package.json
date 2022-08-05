@@ -19,7 +19,7 @@
     "directory": "lens-extension"
   },
   "engines": {
-    "lens": "^5.0.0"
+    "lens": "^6.0.0"
   },
   "renderer": "dist/renderer.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "clean": "rm -rf ./dist"
   },
   "devDependencies": {
-    "@k8slens/extensions": "5.4.5",
+    "@k8slens/extensions": "^6.0.0",
     "@material-ui/core": "^4.12.4",
     "@types/d3": "^7.4.0",
     "@types/node": "^12.0.0",
