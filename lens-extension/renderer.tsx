@@ -10,8 +10,16 @@ import { UANamespaceAuthCountStore } from './src/components/+viz-rbac-user-accou
 
 export function VizRBACIcon(props: Renderer.Component.IconProps) {
   return (
-    <Renderer.Component.Icon {...props} material='pages' tooltip={'VIZ_RBAC'} />
+    <Renderer.Component.Icon
+      {...props}
+      material='verified_user'
+      tooltip={'VIZ_RBAC'}
+    />
   );
+}
+
+export function NoneIcon(props: Renderer.Component.IconProps) {
+  return <></>;
 }
 
 export default class VizRBACExtension extends Renderer.LensExtension {
@@ -54,30 +62,27 @@ export default class VizRBACExtension extends Renderer.LensExtension {
       },
     },
     {
-      id: 'service-accounts',
       parentId: 'viz-rbac',
       target: { pageId: 'service-accounts' },
       title: 'Service Accounts',
       components: {
-        Icon: VizRBACIcon,
+        Icon: NoneIcon,
       },
     },
     {
-      id: 'user-accounts',
       parentId: 'viz-rbac',
       target: { pageId: 'user-accounts' },
       title: 'User Accounts',
       components: {
-        Icon: VizRBACIcon,
+        Icon: NoneIcon,
       },
     },
     {
-      id: 'settings',
       parentId: 'viz-rbac',
       target: { pageId: 'settings' },
       title: 'Settings',
       components: {
-        Icon: VizRBACIcon,
+        Icon: NoneIcon,
       },
     },
   ];
